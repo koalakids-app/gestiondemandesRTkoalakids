@@ -6,130 +6,129 @@
 <title>Koala Kids — Gestion des demandes</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
+:root{--koala:#3D3580;--orange:#F47920;--koala-light:#EEEDF8;--orange-light:#FEF0E6;--koala-dark:#2A2460;--orange-dark:#C95F0A}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a1a;min-height:100vh}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F4F4F6;color:#1a1a1a;min-height:100vh}
 .app{max-width:960px;margin:0 auto;padding:1rem}
-.header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1.25rem;background:#fff;border:1px solid #e5e5e0;border-radius:12px;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
-.logo{display:flex;align-items:center;gap:10px}
-.logo-icon{width:36px;height:36px;border-radius:10px;background:#1D9E75;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
-.logo-name{font-size:15px;font-weight:600}
-.logo-sub{font-size:12px;color:#666}
+.header{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 1.25rem;background:#fff;border:1px solid #e0dff0;border-radius:14px;margin-bottom:1rem;flex-wrap:wrap;gap:8px;border-top:4px solid var(--koala)}
+.logo img{height:44px;width:auto;mix-blend-mode:multiply}
 .main-nav{display:flex;gap:6px;flex-wrap:wrap}
-.mnav-btn{padding:6px 14px;border:1px solid #ddd;border-radius:8px;background:transparent;cursor:pointer;font-size:13px;color:#666;display:flex;align-items:center;gap:6px}
-.mnav-btn.active{background:#E1F5EE;border-color:#0F6E56;color:#085041;font-weight:500}
-.mnav-btn:hover:not(.active){background:#f5f5f0}
+.mnav-btn{padding:7px 15px;border:1.5px solid #dddcf0;border-radius:8px;background:transparent;cursor:pointer;font-size:13px;color:#555;display:flex;align-items:center;gap:6px;font-weight:500;transition:all 0.15s}
+.mnav-btn.active{background:var(--koala);border-color:var(--koala);color:#fff}
+.mnav-btn:hover:not(.active){background:var(--koala-light);border-color:var(--koala);color:var(--koala)}
 .tab-content{display:none}
 .tab-content.active{display:block}
-.notif-banner{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:1rem;display:none;align-items:center;gap:8px}
-.notif-banner.success{background:#E1F5EE;color:#085041;border:1px solid #0F6E56;display:flex}
-.notif-banner.error{background:#FAECE7;color:#993C1D;border:1px solid #D85A30;display:flex}
-.creche-tabs-bar{display:flex;align-items:center;border-bottom:1px solid #e5e5e0;margin-bottom:1rem;overflow-x:auto}
-.creche-tab{padding:9px 16px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:#666;white-space:nowrap;background:transparent;border-top:none;border-left:none;border-right:none;display:flex;align-items:center;gap:6px}
-.creche-tab.active{color:#0F6E56;border-bottom-color:#1D9E75;font-weight:600}
-.creche-tab:hover:not(.active){background:#f5f5f0}
-.tab-count{background:#E1F5EE;color:#085041;font-size:10px;padding:1px 7px;border-radius:10px;font-weight:600}
-.creche-tab.active .tab-count{background:#1D9E75;color:#fff}
-.add-creche-btn{padding:7px 14px;border:1px dashed #ccc;border-radius:8px;background:transparent;cursor:pointer;font-size:13px;color:#666;display:flex;align-items:center;gap:5px;white-space:nowrap;margin-left:8px;flex-shrink:0}
-.add-creche-btn:hover{background:#f5f5f0}
+.notif-banner{padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:1rem;display:none;align-items:center;gap:8px}
+.notif-banner.success{background:#edfaf3;color:#1a6b3c;border:1px solid #5cb87a;display:flex}
+.notif-banner.error{background:var(--orange-light);color:var(--orange-dark);border:1px solid var(--orange);display:flex}
+.creche-tabs-bar{display:flex;align-items:center;border-bottom:2px solid #e0dff0;margin-bottom:1rem;overflow-x:auto}
+.creche-tab{padding:9px 16px;font-size:13px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;color:#777;white-space:nowrap;background:transparent;border-top:none;border-left:none;border-right:none;display:flex;align-items:center;gap:6px;font-weight:500;transition:all 0.15s}
+.creche-tab.active{color:var(--koala);border-bottom-color:var(--orange);font-weight:700}
+.creche-tab:hover:not(.active){color:var(--koala);background:var(--koala-light)}
+.tab-count{background:var(--koala-light);color:var(--koala);font-size:10px;padding:1px 7px;border-radius:10px;font-weight:700}
+.creche-tab.active .tab-count{background:var(--orange);color:#fff}
+.add-creche-btn{padding:7px 14px;border:1.5px dashed #ccc;border-radius:8px;background:transparent;cursor:pointer;font-size:13px;color:#888;display:flex;align-items:center;gap:5px;white-space:nowrap;margin-left:8px;flex-shrink:0}
+.add-creche-btn:hover{background:var(--koala-light);color:var(--koala);border-color:var(--koala)}
 .stats-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:1rem}
-.stat-card{background:#f5f5f0;border-radius:8px;padding:0.75rem 1rem}
-.stat-label{font-size:12px;color:#666;margin-bottom:4px}
-.stat-val{font-size:22px;font-weight:600}
-.cteal{color:#0F6E56}.camber{color:#BA7517}.ccoral{color:#993C1D}.cblue{color:#185FA5}
+.stat-card{background:#fff;border-radius:10px;padding:0.75rem 1rem;border:1px solid #e0dff0;border-top:3px solid var(--koala)}
+.stat-label{font-size:12px;color:#888;margin-bottom:4px;font-weight:500}
+.stat-val{font-size:24px;font-weight:700}
+.cv{color:var(--koala)}.co{color:var(--orange)}.cr{color:#e03e3e}.cg{color:#2a9d4e}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:8px}
 .section-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.section-title{font-size:15px;font-weight:600}
-.btn-primary{padding:8px 16px;background:#1D9E75;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;font-weight:500}
-.btn-primary:hover{background:#0F6E56}
+.section-title{font-size:15px;font-weight:700;color:var(--koala)}
+.btn-primary{padding:8px 16px;background:var(--koala);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;font-weight:600}
+.btn-primary:hover{background:var(--koala-dark)}
 .btn-primary:disabled{opacity:0.6;cursor:not-allowed}
-.btn-blue{padding:8px 16px;background:#378ADD;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;font-weight:500}
-.btn-blue:hover{background:#185FA5}
-.btn-purple{padding:7px 12px;background:#534AB7;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:5px;font-weight:500}
-.btn-purple:hover{background:#3C3489}
-.search-inp{padding:7px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;font-size:13px;width:190px}
-.search-inp:focus{outline:none;border-color:#1D9E75}
+.btn-orange{padding:8px 16px;background:var(--orange);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;font-weight:600}
+.btn-orange:hover{background:var(--orange-dark)}
+.btn-purple{padding:7px 12px;background:var(--koala);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:5px;font-weight:600}
+.btn-purple:hover{background:var(--koala-dark)}
+.search-inp{padding:7px 12px;border:1.5px solid #dddcf0;border-radius:8px;background:#fff;color:#1a1a1a;font-size:13px;width:190px}
+.search-inp:focus{outline:none;border-color:var(--koala)}
 .filters{display:flex;gap:6px;margin-bottom:0.75rem;flex-wrap:wrap}
-.fchip{padding:5px 12px;border:1px solid #e5e5e0;border-radius:20px;background:transparent;cursor:pointer;font-size:12px;color:#666}
-.fchip.active{background:#E1F5EE;border-color:#0F6E56;color:#085041;font-weight:500}
-.fchip:hover:not(.active){background:#f5f5f0}
+.fchip{padding:5px 12px;border:1.5px solid #e0dff0;border-radius:20px;background:transparent;cursor:pointer;font-size:12px;color:#666;font-weight:500}
+.fchip.active{background:var(--koala);border-color:var(--koala);color:#fff}
+.fchip:hover:not(.active){background:var(--koala-light);border-color:var(--koala);color:var(--koala)}
 .demands-list{display:flex;flex-direction:column;gap:8px}
-.dcard{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:0.875rem 1.1rem;display:flex;align-items:flex-start;gap:12px}
-.dcard.urgent{border-left:3px solid #D85A30;border-radius:0 12px 12px 0}
-.dcard.normal{border-left:3px solid #1D9E75;border-radius:0 12px 12px 0}
-.dcard.info{border-left:3px solid #378ADD;border-radius:0 12px 12px 0}
-.dcard.consigne{border-left:3px solid #534AB7;border-radius:0 12px 12px 0}
+.dcard{background:#fff;border:1px solid #e0dff0;border-radius:12px;padding:0.875rem 1.1rem;display:flex;align-items:flex-start;gap:12px}
+.dcard.urgent{border-left:4px solid #e03e3e;border-radius:0 12px 12px 0}
+.dcard.normal{border-left:4px solid var(--koala);border-radius:0 12px 12px 0}
+.dcard.info{border-left:4px solid var(--orange);border-radius:0 12px 12px 0}
+.dcard.consigne{border-left:4px solid var(--orange);border-radius:0 12px 12px 0}
 .dmeta{flex:1;min-width:0}
 .dtop{display:flex;align-items:center;gap:7px;margin-bottom:4px;flex-wrap:wrap}
-.dsubject{font-size:14px;font-weight:600}
+.dsubject{font-size:14px;font-weight:700;color:var(--koala)}
 .dbody{font-size:13px;color:#555;line-height:1.5;margin-bottom:6px}
 .dfoot{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.badge{padding:2px 9px;border-radius:12px;font-size:11px;font-weight:600}
-.b-urgent{background:#FAECE7;color:#993C1D}
-.b-normal{background:#E1F5EE;color:#085041}
-.b-info{background:#E6F1FB;color:#0C447C}
-.b-consigne{background:#EEEDFE;color:#3C3489}
-.b-attente{background:#FAEEDA;color:#854F0B}
-.b-traite{background:#EAF3DE;color:#27500A}
-.b-ref{background:#f5f5f0;color:#555}
-.meta-txt{font-size:12px;color:#888}
-.notif-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:#E6F1FB;color:#0C447C;border-radius:12px;font-size:11px;font-weight:500}
-.reply-box{background:#E6F1FB;border-radius:8px;padding:10px 12px;margin-top:8px;font-size:13px;color:#0C447C;border-left:3px solid #378ADD}
+.badge{padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700}
+.b-urgent{background:#fde8e8;color:#c0392b}
+.b-normal{background:var(--koala-light);color:var(--koala)}
+.b-info{background:var(--orange-light);color:var(--orange-dark)}
+.b-consigne{background:var(--orange-light);color:var(--orange-dark)}
+.b-attente{background:#fff3e0;color:#b35a00}
+.b-traite{background:#e8f5e9;color:#2e7d32}
+.b-ref{background:#f0f0f0;color:#555}
+.meta-txt{font-size:12px;color:#999}
+.reply-box{background:var(--koala-light);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:13px;color:var(--koala);border-left:3px solid var(--koala)}
 .reply-box strong{display:block;margin-bottom:4px;font-size:12px}
 .dactions{display:flex;gap:5px;flex-shrink:0}
-.ibtn{width:32px;height:32px;border:1px solid #e5e5e0;border-radius:8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#888;font-size:15px}
-.ibtn:hover{background:#f5f5f0;color:#1a1a1a}
-.ibtn.del:hover{background:#FAECE7;color:#993C1D;border-color:#D85A30}
-.empty-state{text-align:center;padding:3rem;color:#888}
+.ibtn{width:32px;height:32px;border:1.5px solid #e0dff0;border-radius:8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#888;font-size:15px}
+.ibtn:hover{background:var(--koala-light);color:var(--koala);border-color:var(--koala)}
+.ibtn.del:hover{background:#fde8e8;color:#c0392b;border-color:#e03e3e}
+.empty-state{text-align:center;padding:3rem;color:#aaa}
 .empty-state i{font-size:40px;margin-bottom:1rem;display:block;opacity:0.3}
-.creche-header-box{background:#f5f5f0;border-radius:12px;padding:0.875rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.creche-header-name{font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px}
-.btn-danger-sm{padding:5px 12px;border:1px solid #D85A30;border-radius:8px;background:transparent;cursor:pointer;font-size:12px;color:#993C1D;display:flex;align-items:center;gap:5px}
-.btn-danger-sm:hover{background:#FAECE7}
+.creche-header-box{background:var(--koala);border-radius:12px;padding:0.875rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.creche-header-name{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;color:#fff}
+.creche-header-name span{font-size:12px;color:rgba(255,255,255,0.7);font-weight:400}
 .section-actions{display:flex;gap:8px;flex-wrap:wrap}
-.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-.ref-card{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:1rem 1.1rem}
+.btn-danger-sm{padding:5px 12px;border:1.5px solid rgba(255,255,255,0.4);border-radius:8px;background:transparent;cursor:pointer;font-size:12px;color:#fff;display:flex;align-items:center;gap:5px;font-weight:500}
+.btn-danger-sm:hover{background:rgba(255,255,255,0.15)}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.ref-card{background:#fff;border:1px solid #e0dff0;border-radius:12px;padding:1rem 1.1rem;border-top:3px solid var(--orange)}
 .ref-card-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.ref-avatar{width:40px;height:40px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;color:#085041;flex-shrink:0}
-.ref-name{font-size:14px;font-weight:600}
+.ref-avatar{width:42px;height:42px;border-radius:50%;background:var(--koala);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;flex-shrink:0}
+.ref-name{font-size:14px;font-weight:700;color:var(--koala)}
 .ref-detail{font-size:12px;color:#888;margin-top:2px}
-.ref-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid #e5e5e0}
+.ref-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid #e0dff0}
 .planning-mini{margin-top:8px}
-.planning-mini-title{font-size:11px;color:#888;margin-bottom:6px;font-weight:500;display:flex;align-items:center;gap:4px}
+.planning-mini-title{font-size:11px;color:#888;margin-bottom:6px;font-weight:600;display:flex;align-items:center;gap:4px}
 .planning-mini-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
-.pm-day{text-align:center}
 .pm-day-label{font-size:9px;color:#aaa;text-align:center;margin-bottom:2px}
-.pm-slot{height:18px;border-radius:3px;background:#f5f5f0;margin-bottom:2px}
-.pm-slot.presence{background:#1D9E75;opacity:0.8}
-.pm-slot.absent{background:#BA7517;opacity:0.8}
-.pm-slot.formation{background:#378ADD;opacity:0.8}
-.pm-slot.reunion{background:#534AB7;opacity:0.8}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;align-items:center;justify-content:center;padding:1rem}
+.pm-slot{height:18px;border-radius:3px;background:#f0f0f5;margin-bottom:2px}
+.pm-slot.presence{background:var(--koala)}
+.pm-slot.absent{background:var(--orange)}
+.pm-slot.formation{background:#378ADD}
+.pm-slot.reunion{background:#7B68EE}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center;padding:1rem}
 .overlay.open{display:flex}
-.modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:520px;border:1px solid #e5e5e0;max-height:90vh;overflow-y:auto}
-.modal h3{font-size:17px;font-weight:600;margin-bottom:1.25rem}
+.modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:520px;border:1px solid #e0dff0;max-height:90vh;overflow-y:auto;border-top:4px solid var(--koala)}
+.modal h3{font-size:17px;font-weight:700;margin-bottom:1.25rem;color:var(--koala)}
 .fg{margin-bottom:1rem}
-.flabel{font-size:13px;color:#555;font-weight:500;display:block;margin-bottom:5px}
-.finput{width:100%;padding:9px 11px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;font-size:13px}
-.finput:focus{outline:none;border-color:#1D9E75}
+.flabel{font-size:13px;color:#555;font-weight:600;display:block;margin-bottom:5px}
+.finput{width:100%;padding:9px 11px;border:1.5px solid #dddcf0;border-radius:8px;background:#fff;color:#1a1a1a;font-size:13px}
+.finput:focus{outline:none;border-color:var(--koala)}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .mactions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem}
-.btn-cancel{padding:8px 16px;border:1px solid #ddd;border-radius:8px;background:transparent;cursor:pointer;font-size:13px;color:#555}
-.info-box{background:#E6F1FB;border-radius:8px;padding:10px 12px;font-size:12px;color:#0C447C;display:flex;align-items:center;gap:8px;margin-bottom:1rem}
-.planning-grid{display:grid;grid-template-columns:110px repeat(5,1fr);gap:0;border:1px solid #e5e5e0;border-radius:12px;overflow:hidden}
-.pg-hd{background:#f5f5f0;padding:9px;font-size:12px;font-weight:600;text-align:center;border-bottom:1px solid #e5e5e0;border-right:1px solid #e5e5e0}
+.btn-cancel{padding:8px 16px;border:1.5px solid #dddcf0;border-radius:8px;background:transparent;cursor:pointer;font-size:13px;color:#555}
+.btn-cancel:hover{background:#f5f5f5}
+.info-box{background:var(--koala-light);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--koala);display:flex;align-items:center;gap:8px;margin-bottom:1rem;font-weight:500}
+.planning-grid{display:grid;grid-template-columns:110px repeat(5,1fr);gap:0;border:1px solid #e0dff0;border-radius:12px;overflow:hidden}
+.pg-hd{background:var(--koala);color:#fff;padding:9px;font-size:12px;font-weight:700;text-align:center;border-bottom:1px solid rgba(255,255,255,0.2);border-right:1px solid rgba(255,255,255,0.2)}
 .pg-hd:last-child{border-right:none}
-.pg-time{background:#f5f5f0;padding:9px 7px;font-size:11px;color:#888;border-right:1px solid #e5e5e0;border-bottom:1px solid #e5e5e0;display:flex;align-items:center}
-.pg-cell{padding:5px;border-right:1px solid #e5e5e0;border-bottom:1px solid #e5e5e0;min-height:60px;cursor:pointer;background:#fff}
+.pg-hd:first-child{background:var(--koala-dark)}
+.pg-time{background:var(--koala-light);padding:9px 7px;font-size:11px;color:var(--koala);border-right:1px solid #e0dff0;border-bottom:1px solid #e0dff0;display:flex;align-items:center;font-weight:600}
+.pg-cell{padding:5px;border-right:1px solid #e0dff0;border-bottom:1px solid #e0dff0;min-height:60px;cursor:pointer;background:#fff}
 .pg-cell:last-child{border-right:none}
-.pg-cell:hover{background:#f9f9f6}
-.pg-ev{border-radius:6px;padding:4px 7px;font-size:11px;margin-bottom:3px;cursor:pointer;font-weight:500}
-.pg-ev.presence{background:#E1F5EE;color:#085041;border-left:2px solid #0F6E56}
-.pg-ev.absent{background:#FAEEDA;color:#633806;border-left:2px solid #BA7517}
-.pg-ev.formation{background:#E6F1FB;color:#0C447C;border-left:2px solid #185FA5}
-.pg-ev.reunion{background:#EEEDFE;color:#3C3489;border-left:2px solid #534AB7}
+.pg-cell:hover{background:var(--koala-light)}
+.pg-ev{border-radius:6px;padding:4px 7px;font-size:11px;margin-bottom:3px;cursor:pointer;font-weight:600}
+.pg-ev.presence{background:var(--koala);color:#fff}
+.pg-ev.absent{background:var(--orange);color:#fff}
+.pg-ev.formation{background:#378ADD;color:#fff}
+.pg-ev.reunion{background:#7B68EE;color:#fff}
 .legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:0.75rem}
-.leg-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#666}
-.leg-dot{width:10px;height:10px;border-radius:2px}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#666;font-weight:500}
+.leg-dot{width:12px;height:12px;border-radius:3px}
 @media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr)}.frow{grid-template-columns:1fr}.section-actions{flex-direction:column}}
 </style>
 </head>
@@ -137,11 +136,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="app">
   <div class="header">
     <div class="logo">
-      <div class="logo-icon"><i class="ti ti-baby-carriage"></i></div>
-      <div>
-        <div class="logo-name">Koala Kids — Gestion des demandes</div>
-        <div class="logo-sub">Coordinatrice pédagogique</div>
-      </div>
+      <img src="logo-koala-kids.png" alt="Koala Kids" />
     </div>
     <nav class="main-nav">
       <button class="mnav-btn active" onclick="showMain('demands')" id="mnav-demands"><i class="ti ti-message-circle"></i> Demandes</button>
@@ -169,32 +164,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:8px">
       <div style="display:flex;align-items:center;gap:10px">
         <button class="ibtn" onclick="changeWeek(-1)"><i class="ti ti-chevron-left"></i></button>
-        <span id="week-label" style="font-size:14px;font-weight:500">—</span>
+        <span id="week-label" style="font-size:14px;font-weight:700;color:var(--koala)">—</span>
         <button class="ibtn" onclick="changeWeek(1)"><i class="ti ti-chevron-right"></i></button>
       </div>
       <button class="btn-primary" onclick="openEventModal()"><i class="ti ti-plus"></i> Ajouter</button>
     </div>
     <div class="legend">
-      <div class="leg-item"><div class="leg-dot" style="background:#1D9E75"></div> Présence</div>
-      <div class="leg-item"><div class="leg-dot" style="background:#BA7517"></div> Absent</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--koala)"></div> Présence</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--orange)"></div> Absent</div>
       <div class="leg-item"><div class="leg-dot" style="background:#378ADD"></div> Formation</div>
-      <div class="leg-item"><div class="leg-dot" style="background:#534AB7"></div> Réunion</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#7B68EE"></div> Réunion</div>
     </div>
     <div class="planning-grid" id="planning-grid"></div>
   </div>
 </div>
 
-<!-- Modal demande -->
 <div class="overlay" id="modal-demand-wrap">
   <div class="modal">
     <h3 id="modal-d-title">Nouvelle demande</h3>
     <div class="frow">
-      <div class="fg"><label class="flabel">Référent</label>
-        <select class="finput" id="d-ref-select" onchange="fillRefEmail()">
-          <option value="">-- Choisir --</option>
-        </select>
-      </div>
-      <div class="fg"><label class="flabel">E-mail du référent</label><input class="finput" id="d-email" placeholder="referent@email.fr" type="email"/></div>
+      <div class="fg"><label class="flabel">Référent</label><select class="finput" id="d-ref-select" onchange="fillRefEmail()"><option value="">-- Choisir --</option></select></div>
+      <div class="fg"><label class="flabel">E-mail référent</label><input class="finput" id="d-email" placeholder="referent@email.fr" type="email"/></div>
     </div>
     <div class="fg"><label class="flabel">Sujet</label><input class="finput" id="d-subj" placeholder="Ex. : Réaménagement espace jeux"/></div>
     <div class="fg"><label class="flabel">Description</label><textarea class="finput" id="d-desc" rows="3" placeholder="Détails…" style="resize:vertical"></textarea></div>
@@ -203,66 +193,44 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="fg"><label class="flabel">Thème</label><select class="finput" id="d-theme"><option>Pédagogie</option><option>Matériel</option><option>Formation</option><option>Organisation</option><option>Autre</option></select></div>
     </div>
     <div class="info-box"><i class="ti ti-mail" style="font-size:15px"></i> Un e-mail sera envoyé au référent et à l'administrateur.</div>
-    <div class="mactions">
-      <button class="btn-cancel" onclick="closeModal('modal-demand-wrap')">Annuler</button>
-      <button class="btn-primary" id="btn-save-demand" onclick="saveDemand()"><i class="ti ti-check"></i> Enregistrer</button>
-    </div>
+    <div class="mactions"><button class="btn-cancel" onclick="closeModal('modal-demand-wrap')">Annuler</button><button class="btn-primary" id="btn-save-demand" onclick="saveDemand()"><i class="ti ti-check"></i> Enregistrer</button></div>
   </div>
 </div>
 
-<!-- Modal consigne -->
 <div class="overlay" id="modal-consigne-wrap">
   <div class="modal">
     <h3>Envoyer une consigne</h3>
-    <div class="fg"><label class="flabel">Référent destinataire</label>
-      <select class="finput" id="c-ref-select">
-        <option value="">-- Choisir --</option>
-      </select>
-    </div>
+    <div class="fg"><label class="flabel">Référent destinataire</label><select class="finput" id="c-ref-select"><option value="">-- Choisir --</option></select></div>
     <div class="fg"><label class="flabel">Sujet</label><input class="finput" id="c-subj" placeholder="Ex. : Mise à jour protocole accueil"/></div>
     <div class="fg"><label class="flabel">Message</label><textarea class="finput" id="c-msg" rows="4" placeholder="Rédigez votre consigne…" style="resize:vertical"></textarea></div>
     <div class="fg"><label class="flabel">Priorité</label><select class="finput" id="c-prio"><option value="normal">Normale</option><option value="urgent">Urgente</option><option value="info">Information</option></select></div>
     <div class="info-box"><i class="ti ti-mail" style="font-size:15px"></i> Le référent recevra un e-mail avec un lien pour vous répondre.</div>
-    <div class="mactions">
-      <button class="btn-cancel" onclick="closeModal('modal-consigne-wrap')">Annuler</button>
-      <button class="btn-primary" id="btn-save-consigne" onclick="saveConsigne()"><i class="ti ti-send"></i> Envoyer</button>
-    </div>
+    <div class="mactions"><button class="btn-cancel" onclick="closeModal('modal-consigne-wrap')">Annuler</button><button class="btn-primary" id="btn-save-consigne" onclick="saveConsigne()"><i class="ti ti-send"></i> Envoyer</button></div>
   </div>
 </div>
 
-<!-- Modal référent -->
 <div class="overlay" id="modal-ref-wrap">
   <div class="modal">
     <h3 id="modal-ref-title">Ajouter un référent</h3>
     <div class="frow">
-      <div class="fg"><label class="flabel">Prénom et nom</label><input class="finput" id="r-name" placeholder="Ex. : Marie Dupont"/></div>
+      <div class="fg"><label class="flabel">Prénom et nom</label><input class="finput" id="r-name" placeholder="Marie Dupont"/></div>
       <div class="fg"><label class="flabel">E-mail</label><input class="finput" id="r-email" type="email" placeholder="marie@koalakids.fr"/></div>
     </div>
-    <div class="fg"><label class="flabel">Crèche rattachée</label>
-      <select class="finput" id="r-creche"><option value="">-- Choisir --</option></select>
-    </div>
-    <div class="fg"><label class="flabel">Poste</label><input class="finput" id="r-poste" placeholder="Ex. : Éducatrice de jeunes enfants"/></div>
-    <div class="mactions">
-      <button class="btn-cancel" onclick="closeModal('modal-ref-wrap')">Annuler</button>
-      <button class="btn-primary" onclick="saveRef()"><i class="ti ti-check"></i> Enregistrer</button>
-    </div>
+    <div class="fg"><label class="flabel">Crèche rattachée</label><select class="finput" id="r-creche"><option value="">-- Choisir --</option></select></div>
+    <div class="fg"><label class="flabel">Poste</label><input class="finput" id="r-poste" placeholder="Éducatrice de jeunes enfants"/></div>
+    <div class="mactions"><button class="btn-cancel" onclick="closeModal('modal-ref-wrap')">Annuler</button><button class="btn-primary" onclick="saveRef()"><i class="ti ti-check"></i> Enregistrer</button></div>
   </div>
 </div>
 
-<!-- Modal crèche -->
 <div class="overlay" id="modal-creche-wrap">
   <div class="modal">
     <h3>Ajouter une crèche</h3>
-    <div class="fg"><label class="flabel">Nom</label><input class="finput" id="creche-name" placeholder="Ex. : Les Petits Lutins"/></div>
+    <div class="fg"><label class="flabel">Nom</label><input class="finput" id="creche-name" placeholder="Les Petits Lutins"/></div>
     <div class="fg"><label class="flabel">Adresse (optionnel)</label><input class="finput" id="creche-addr" placeholder="Adresse"/></div>
-    <div class="mactions">
-      <button class="btn-cancel" onclick="closeModal('modal-creche-wrap')">Annuler</button>
-      <button class="btn-primary" onclick="saveCreche()"><i class="ti ti-check"></i> Ajouter</button>
-    </div>
+    <div class="mactions"><button class="btn-cancel" onclick="closeModal('modal-creche-wrap')">Annuler</button><button class="btn-primary" onclick="saveCreche()"><i class="ti ti-check"></i> Ajouter</button></div>
   </div>
 </div>
 
-<!-- Modal planning -->
 <div class="overlay" id="modal-event-wrap">
   <div class="modal">
     <h3>Ajouter à mon planning</h3>
@@ -272,10 +240,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
     <div class="fg"><label class="flabel">Crèche / Lieu</label><input class="finput" id="e-lieu" placeholder="Nom de la crèche"/></div>
     <div class="fg"><label class="flabel">Type</label><select class="finput" id="e-type"><option value="presence">Présence crèche</option><option value="absent">Absent / Congé</option><option value="formation">Formation</option><option value="reunion">Réunion</option></select></div>
-    <div class="mactions">
-      <button class="btn-cancel" onclick="closeModal('modal-event-wrap')">Annuler</button>
-      <button class="btn-primary" onclick="saveEvent()"><i class="ti ti-check"></i> Enregistrer</button>
-    </div>
+    <div class="mactions"><button class="btn-cancel" onclick="closeModal('modal-event-wrap')">Annuler</button><button class="btn-primary" onclick="saveEvent()"><i class="ti ti-check"></i> Enregistrer</button></div>
   </div>
 </div>
 
@@ -284,15 +249,15 @@ const SUPABASE_URL="https://juyrceadazrovlitxceb.supabase.co";
 const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1eXJjZWFkYXpyb3ZsaXR4Y2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MjcyMDIsImV4cCI6MjA5NTQwMzIwMn0.yTEoRjhJFm3qj5oY2tLIcCXOWHHbU3rxWoIn47QKmug";
 const APP_URL="https://koalakids-app.github.io/gestiondemandesRTkoalakids";
 const DAYS=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
-let activeCrecheId=null,activeFilter='all',editingDemandId=null,editingRefId=null,weekOffset=0;
+let activeCrecheId=null,activeFilter='all',editingRefId=null,weekOffset=0;
 
-async function callFn(fn,body){try{const r=await fetch(`${SUPABASE_URL}/functions/v1/${fn}`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_ANON_KEY}`},body:JSON.stringify(body)});return r.ok;}catch{return false;}}
-async function getReplies(id){try{const r=await fetch(`${SUPABASE_URL}/rest/v1/replies?consigne_id=eq.${id}&order=created_at.desc`,{headers:{'Authorization':`Bearer ${SUPABASE_ANON_KEY}`,'apikey':SUPABASE_ANON_KEY}});return await r.json();}catch{return[];}}
-async function getRefPlanning(refId){try{const ws=weekStart();const r=await fetch(`${SUPABASE_URL}/rest/v1/plannings?referent_id=eq.${refId}&week_start=eq.${ws.toISOString().slice(0,10)}`,{headers:{'Authorization':`Bearer ${SUPABASE_ANON_KEY}`,'apikey':SUPABASE_ANON_KEY}});return await r.json();}catch{return[];}}
+async function callFn(fn,body){try{const r=await fetch(SUPABASE_URL+'/functions/v1/'+fn,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_ANON_KEY},body:JSON.stringify(body)});return r.ok;}catch{return false;}}
+async function getReplies(id){try{const r=await fetch(SUPABASE_URL+'/rest/v1/replies?consigne_id=eq.'+id+'&order=created_at.desc',{headers:{'Authorization':'Bearer '+SUPABASE_ANON_KEY,'apikey':SUPABASE_ANON_KEY}});return await r.json();}catch{return[];}}
+async function getRefPlanning(refId){try{const ws=weekStart();const r=await fetch(SUPABASE_URL+'/rest/v1/plannings?referent_id=eq.'+refId+'&week_start=eq.'+ws.toISOString().slice(0,10),{headers:{'Authorization':'Bearer '+SUPABASE_ANON_KEY,'apikey':SUPABASE_ANON_KEY}});return await r.json();}catch{return[];}}
 
-function showBanner(msg,type='success'){const b=document.getElementById('notif-banner');b.className=`notif-banner ${type}`;b.innerHTML=`<i class="ti ti-${type==='success'?'circle-check':'alert-circle'}"></i> ${msg}`;setTimeout(()=>{b.style.display='none';b.className='notif-banner';},5000);}
+function showBanner(msg,type='success'){const b=document.getElementById('notif-banner');b.className='notif-banner '+type;b.innerHTML='<i class="ti ti-'+(type==='success'?'circle-check':'alert-circle')+'"></i> '+msg;setTimeout(()=>{b.style.display='none';b.className='notif-banner';},5000);}
 function load(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch{return null;}}
-function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){console.error(e);}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 function getCreches(){return load('creches_v2')||[];}
 function getDemands(){return load('demands_v2')||[];}
 function getReferents(){return load('referents_v1')||[];}
@@ -301,8 +266,8 @@ function getEvents(){return load('events_'+weekStart().toISOString().slice(0,10)
 
 function showMain(tab){
   ['demands','referents','planning'].forEach(t=>{
-    document.getElementById(`main-${t}`).classList.toggle('active',t===tab);
-    document.getElementById(`mnav-${t}`).classList.toggle('active',t===tab);
+    document.getElementById('main-'+t).classList.toggle('active',t===tab);
+    document.getElementById('mnav-'+t).classList.toggle('active',t===tab);
   });
   if(tab==='planning')renderPlanning();
   if(tab==='demands')renderCrecheTabs();
@@ -317,9 +282,9 @@ function renderCrecheTabs(){
   let html='';
   creches.forEach(c=>{
     const count=demands.filter(d=>d.crecheId===c.id).length;
-    html+=`<button class="creche-tab${activeCrecheId===c.id?' active':''}" onclick="selectCreche('${c.id}')"><i class="ti ti-building" style="font-size:13px"></i> ${c.name}<span class="tab-count">${count}</span></button>`;
+    html+='<button class="creche-tab'+(activeCrecheId===c.id?' active':'')+'" onclick="selectCreche(\''+c.id+'\')"><i class="ti ti-building" style="font-size:13px"></i> '+c.name+'<span class="tab-count">'+count+'</span></button>';
   });
-  html+=`<button class="add-creche-btn" onclick="openCrecheModal()"><i class="ti ti-plus"></i> Ajouter une crèche</button>`;
+  html+='<button class="add-creche-btn" onclick="openCrecheModal()"><i class="ti ti-plus"></i> Ajouter une crèche</button>';
   bar.innerHTML=html;
   renderCrechePanel();
 }
@@ -329,7 +294,7 @@ function selectCreche(id){activeCrecheId=id;activeFilter='all';renderCrecheTabs(
 async function renderCrechePanel(){
   const panel=document.getElementById('creche-panel');
   const creches=getCreches(),demands=getDemands();
-  if(!creches.length){panel.innerHTML=`<div class="empty-state"><i class="ti ti-building-off"></i><p>Aucune crèche. Ajoutez votre première crèche.</p></div>`;return;}
+  if(!creches.length){panel.innerHTML='<div class="empty-state"><i class="ti ti-building-off"></i><p>Aucune crèche. Ajoutez votre première crèche.</p></div>';return;}
   const creche=creches.find(c=>c.id===activeCrecheId);
   if(!creche){panel.innerHTML='';return;}
   const all=demands.filter(d=>d.crecheId===creche.id);
@@ -343,62 +308,23 @@ async function renderCrechePanel(){
     return true;
   });
   const total=all.length,attente=all.filter(d=>d.status==='attente').length,urgent=all.filter(d=>d.priority==='urgent').length,traite=all.filter(d=>d.status==='traite').length;
-  let html=`<div class="creche-header-box">
-    <div class="creche-header-name"><i class="ti ti-building" style="font-size:18px;color:#1D9E75"></i> ${creche.name}${creche.addr?`<span style="font-size:12px;color:#888;font-weight:400">${creche.addr}</span>`:''}</div>
-    <div class="section-actions">
-      <button class="btn-blue" onclick="openConsigneModal()"><i class="ti ti-send"></i> Envoyer une consigne</button>
-      <button class="btn-danger-sm" onclick="deleteCreche('${creche.id}')"><i class="ti ti-trash" style="font-size:13px"></i> Supprimer</button>
-    </div>
-  </div>
-  <div class="stats-row">
-    <div class="stat-card"><div class="stat-label">Total</div><div class="stat-val cteal">${total}</div></div>
-    <div class="stat-card"><div class="stat-label">En attente</div><div class="stat-val camber">${attente}</div></div>
-    <div class="stat-card"><div class="stat-label">Urgentes</div><div class="stat-val ccoral">${urgent}</div></div>
-    <div class="stat-card"><div class="stat-label">Traitées</div><div class="stat-val cblue">${traite}</div></div>
-  </div>
-  <div class="section-header">
-    <div class="section-left">
-      <span class="section-title">Demandes & consignes</span>
-      <input class="search-inp" id="search-d" type="text" placeholder="Rechercher…" oninput="renderCrechePanel()">
-    </div>
-    <button class="btn-primary" onclick="openDemandModal()"><i class="ti ti-plus"></i> Nouvelle demande</button>
-  </div>
-  <div class="filters">
-    <button class="fchip${activeFilter==='all'?' active':''}" onclick="setFilter('all')">Toutes</button>
-    <button class="fchip${activeFilter==='urgent'?' active':''}" onclick="setFilter('urgent')">Urgentes</button>
-    <button class="fchip${activeFilter==='attente'?' active':''}" onclick="setFilter('attente')">En attente</button>
-    <button class="fchip${activeFilter==='traite'?' active':''}" onclick="setFilter('traite')">Traitées</button>
-    <button class="fchip${activeFilter==='consigne'?' active':''}" onclick="setFilter('consigne')">Consignes</button>
-  </div>
-  <div class="demands-list" id="demands-list-inner">`;
-  if(!filtered.length){html+=`<div class="empty-state"><i class="ti ti-inbox"></i><p>Aucune demande pour cette crèche.</p></div>`;}
+  let html='<div class="creche-header-box"><div class="creche-header-name"><i class="ti ti-building" style="font-size:20px"></i> '+creche.name+(creche.addr?'<span>'+creche.addr+'</span>':'')+'</div><div class="section-actions"><button class="btn-orange" onclick="openConsigneModal()"><i class="ti ti-send"></i> Envoyer une consigne</button><button class="btn-danger-sm" onclick="deleteCreche(\''+creche.id+'\')"><i class="ti ti-trash" style="font-size:13px"></i> Supprimer</button></div></div>';
+  html+='<div class="stats-row"><div class="stat-card"><div class="stat-label">Total</div><div class="stat-val cv">'+total+'</div></div><div class="stat-card" style="border-top-color:var(--orange)"><div class="stat-label">En attente</div><div class="stat-val co">'+attente+'</div></div><div class="stat-card" style="border-top-color:#e03e3e"><div class="stat-label">Urgentes</div><div class="stat-val cr">'+urgent+'</div></div><div class="stat-card" style="border-top-color:#2a9d4e"><div class="stat-label">Traitées</div><div class="stat-val cg">'+traite+'</div></div></div>';
+  html+='<div class="section-header"><div class="section-left"><span class="section-title">Demandes & consignes</span><input class="search-inp" id="search-d" type="text" placeholder="Rechercher…" oninput="renderCrechePanel()"></div><button class="btn-primary" onclick="openDemandModal()"><i class="ti ti-plus"></i> Nouvelle demande</button></div>';
+  html+='<div class="filters"><button class="fchip'+(activeFilter==='all'?' active':'')+'" onclick="setFilter(\'all\')">Toutes</button><button class="fchip'+(activeFilter==='urgent'?' active':'')+'" onclick="setFilter(\'urgent\')">Urgentes</button><button class="fchip'+(activeFilter==='attente'?' active':'')+'" onclick="setFilter(\'attente\')">En attente</button><button class="fchip'+(activeFilter==='traite'?' active':'')+'" onclick="setFilter(\'traite\')">Traitées</button><button class="fchip'+(activeFilter==='consigne'?' active':'')+'" onclick="setFilter(\'consigne\')">Consignes</button></div>';
+  html+='<div class="demands-list" id="demands-list-inner">';
+  if(!filtered.length){html+='<div class="empty-state"><i class="ti ti-inbox"></i><p>Aucune demande pour cette crèche.</p></div>';}
   else{for(const d of filtered){
     const isC=d.type==='consigne';
-    html+=`<div class="dcard ${isC?'consigne':d.priority}"><div class="dmeta">
-      <div class="dtop"><span class="dsubject">${d.subject}</span>
-        ${isC?`<span class="badge b-consigne"><i class="ti ti-send" style="font-size:10px"></i> Consigne</span>`:`<span class="badge b-${d.priority}">${d.priority==='urgent'?'Urgent':d.priority==='info'?'Info':'Normal'}</span>`}
-        ${d.theme&&!isC?`<span class="badge" style="background:#f5f5f0;color:#555">${d.theme}</span>`:''}
-      </div>
-      <div class="dbody">${d.desc||d.message||'—'}</div>
-      <div class="dfoot">
-        ${d.referent?`<span class="badge b-ref"><i class="ti ti-user" style="font-size:11px"></i> ${d.referent}</span>`:''}
-        <span class="meta-txt">${d.date}</span>
-        ${!isC?`<span class="badge b-${d.status||'attente'}">${d.status==='traite'?'Traitée':'En attente'}</span>`:''}
-      </div>
-      <div id="replies-${d.id}"></div>
-    </div>
-    <div class="dactions">
-      ${!isC?`<button class="ibtn" title="Changer statut" onclick="toggleStatus('${d.id}')"><i class="ti ti-${d.status==='traite'?'rotate-clockwise':'check'}"></i></button>`:''}
-      <button class="ibtn del" title="Supprimer" onclick="deleteDemand('${d.id}')"><i class="ti ti-trash"></i></button>
-    </div></div>`;
+    html+='<div class="dcard '+(isC?'consigne':d.priority)+'"><div class="dmeta"><div class="dtop"><span class="dsubject">'+d.subject+'</span>'+(isC?'<span class="badge b-consigne"><i class="ti ti-send" style="font-size:10px"></i> Consigne</span>':'<span class="badge b-'+d.priority+'">'+(d.priority==='urgent'?'Urgent':d.priority==='info'?'Info':'Normal')+'</span>')+(d.theme&&!isC?'<span class="badge b-ref">'+d.theme+'</span>':'')+'</div><div class="dbody">'+(d.desc||d.message||'—')+'</div><div class="dfoot">'+(d.referent?'<span class="badge b-ref"><i class="ti ti-user" style="font-size:11px"></i> '+d.referent+'</span>':'')+'<span class="meta-txt">'+d.date+'</span>'+(isC?'':'<span class="badge b-'+(d.status||'attente')+'">'+(d.status==='traite'?'Traitée':'En attente')+'</span>')+'</div><div id="replies-'+d.id+'"></div></div><div class="dactions">'+(isC?'':'<button class="ibtn" onclick="toggleStatus(\''+d.id+'\')"><i class="ti ti-'+(d.status==='traite'?'rotate-clockwise':'check')+'"></i></button>')+'<button class="ibtn del" onclick="deleteDemand(\''+d.id+'\')"><i class="ti ti-trash"></i></button></div></div>';
   }}
   html+='</div>';
   panel.innerHTML=html;
   for(const d of filtered){
     if(d.type==='consigne'){
       const replies=await getReplies(d.id);
-      const el=document.getElementById(`replies-${d.id}`);
-      if(el&&replies.length){el.innerHTML=replies.map(r=>`<div class="reply-box"><strong><i class="ti ti-message-reply" style="font-size:11px"></i> Réponse de ${r.referent_name} — ${new Date(r.created_at).toLocaleDateString('fr-FR')}</strong>${r.message}</div>`).join('');}
+      const el=document.getElementById('replies-'+d.id);
+      if(el&&replies.length){el.innerHTML=replies.map(r=>'<div class="reply-box"><strong><i class="ti ti-message-reply" style="font-size:11px"></i> Réponse de '+r.referent_name+' — '+new Date(r.created_at).toLocaleDateString('fr-FR')+'</strong>'+r.message+'</div>').join('');}
     }
   }
 }
@@ -408,19 +334,18 @@ function fillRefEmail(){const sel=document.getElementById('d-ref-select');const 
 
 function populateSelects(){
   const refs=getReferents(),creches=getCreches(),creche=creches.find(c=>c.id===activeCrecheId);
-  const crecheRefs=creche?refs.filter(r=>r.crecheId===creche.id):refs;
+  const cRefs=creche?refs.filter(r=>r.crecheId===creche.id):refs;
   const dSel=document.getElementById('d-ref-select');
-  if(dSel)dSel.innerHTML='<option value="">-- Choisir --</option>'+crecheRefs.map(r=>`<option value="${r.name}">${r.name}</option>`).join('');
+  if(dSel)dSel.innerHTML='<option value="">-- Choisir --</option>'+cRefs.map(r=>'<option value="'+r.name+'">'+r.name+'</option>').join('');
   const cSel=document.getElementById('c-ref-select');
-  if(cSel)cSel.innerHTML='<option value="">-- Choisir --</option>'+refs.map(r=>`<option value="${r.id}">${r.name}${creches.find(c=>c.id===r.crecheId)?` (${creches.find(c=>c.id===r.crecheId).name})`:''}</option>`).join('');
+  if(cSel)cSel.innerHTML='<option value="">-- Choisir --</option>'+refs.map(r=>'<option value="'+r.id+'">'+r.name+(creches.find(c=>c.id===r.crecheId)?' ('+creches.find(c=>c.id===r.crecheId).name+')':'')+'</option>').join('');
 }
 
-function openDemandModal(){editingDemandId=null;populateSelects();['d-ref-select','d-email','d-subj','d-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('d-prio').value='normal';document.getElementById('d-theme').value='Pédagogie';document.getElementById('modal-d-title').textContent='Nouvelle demande';document.getElementById('modal-demand-wrap').classList.add('open');}
+function openDemandModal(){populateSelects();['d-ref-select','d-email','d-subj','d-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('d-prio').value='normal';document.getElementById('d-theme').value='Pédagogie';document.getElementById('modal-d-title').textContent='Nouvelle demande';document.getElementById('modal-demand-wrap').classList.add('open');}
 function openConsigneModal(){populateSelects();document.getElementById('c-ref-select').value='';document.getElementById('c-subj').value='';document.getElementById('c-msg').value='';document.getElementById('c-prio').value='normal';document.getElementById('modal-consigne-wrap').classList.add('open');}
 
 async function saveDemand(){
-  const refName=document.getElementById('d-ref-select').value||'';
-  const subj=document.getElementById('d-subj').value.trim();
+  const refName=document.getElementById('d-ref-select').value||'',subj=document.getElementById('d-subj').value.trim();
   if(!subj){alert('Sujet requis.');return;}
   const btn=document.getElementById('btn-save-demand');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i> Envoi…';
   const demands=getDemands(),creches=getCreches(),creche=creches.find(c=>c.id===activeCrecheId);
@@ -441,7 +366,7 @@ async function saveConsigne(){
   const consigne={id:Date.now().toString(),crecheId:activeCrecheId,referent:ref?.name||'',referentEmail:ref?.email||'',subject:subj,message:msg,priority:document.getElementById('c-prio').value,date:new Date().toLocaleDateString('fr-FR'),type:'consigne',status:'envoyee'};
   const demands=getDemands();demands.unshift(consigne);save('demands_v2',demands);
   const ok=await callFn('notify-consigne',{consigne:{...consigne,creche:creche?.name||''}});
-  if(ok)showBanner(`Consigne envoyée à ${ref?.name} !`);else showBanner('Consigne enregistrée (e-mail non disponible).','error');
+  if(ok)showBanner('Consigne envoyée à '+ref?.name+' !');else showBanner('Consigne enregistrée (e-mail non disponible).','error');
   btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i> Envoyer';
   closeModal('modal-consigne-wrap');renderCrecheTabs();
 }
@@ -450,8 +375,8 @@ async function toggleStatus(id){
   const demands=getDemands(),creches=getCreches(),d=demands.find(x=>x.id===id);
   if(!d)return;d.status=d.status==='traite'?'attente':'traite';save('demands_v2',demands);
   const creche=creches.find(c=>c.id===d.crecheId);
-  const ok=await callFn('notify-status',{demand:{...d,creche:creche?.name||''},newStatus:d.status});
-  if(ok)showBanner(`Demande "${d.status==='traite'?'traitée':'remise en attente'}" !`);
+  await callFn('notify-status',{demand:{...d,creche:creche?.name||''},newStatus:d.status});
+  showBanner('Demande "'+(d.status==='traite'?'traitée':'remise en attente')+'" !');
   renderCrecheTabs();
 }
 
@@ -463,42 +388,16 @@ function deleteCreche(id){if(!confirm('Supprimer cette crèche ?'))return;save('
 async function renderReferents(){
   const refs=getReferents(),creches=getCreches();
   const grid=document.getElementById('ref-grid');
-  if(!refs.length){grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><i class="ti ti-users"></i><p>Aucun référent. Ajoutez votre premier référent.</p></div>`;return;}
+  if(!refs.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1"><i class="ti ti-users"></i><p>Aucun référent.</p></div>';return;}
   let html='';
   for(const r of refs){
     const creche=creches.find(c=>c.id===r.crecheId);
     const initials=r.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
     const slots=await getRefPlanning(r.id);
-    let miniGrid='<div class="planning-mini-grid">';
-    for(let d=0;d<5;d++){
-      miniGrid+=`<div class="pm-day"><div class="pm-day-label">${DAYS[d].slice(0,2)}</div>`;
-      for(let s=0;s<2;s++){
-        const ev=slots.find(e=>e.day===d&&e.slot===s);
-        miniGrid+=`<div class="pm-slot${ev?' '+ev.type:''}" title="${ev?ev.type:''}"></div>`;
-      }
-      miniGrid+='</div>';
-    }
-    miniGrid+='</div>';
-    html+=`<div class="ref-card">
-      <div class="ref-card-top">
-        <div class="ref-avatar">${initials}</div>
-        <div style="flex:1;min-width:0">
-          <div class="ref-name">${r.name}</div>
-          <div class="ref-detail">${r.poste||'Référent pédagogique'}</div>
-          <div class="ref-detail"><i class="ti ti-building" style="font-size:11px"></i> ${creche?.name||'—'}</div>
-          <div class="ref-detail"><i class="ti ti-mail" style="font-size:11px"></i> ${r.email||'—'}</div>
-        </div>
-      </div>
-      <div class="planning-mini">
-        <div class="planning-mini-title"><i class="ti ti-calendar" style="font-size:11px"></i> Planning cette semaine</div>
-        ${slots.length?miniGrid:'<div style="font-size:11px;color:#aaa">Aucun créneau renseigné</div>'}
-      </div>
-      <div class="ref-actions">
-        <button class="btn-purple" onclick="sendLink('${r.id}')"><i class="ti ti-link" style="font-size:12px"></i> Envoyer le lien</button>
-        <button class="ibtn" title="Modifier" onclick="editRef('${r.id}')"><i class="ti ti-edit"></i></button>
-        <button class="ibtn del" title="Supprimer" onclick="deleteRef('${r.id}')"><i class="ti ti-trash"></i></button>
-      </div>
-    </div>`;
+    let mg='<div class="planning-mini-grid">';
+    for(let d=0;d<5;d++){mg+='<div><div class="pm-day-label">'+DAYS[d].slice(0,2)+'</div>';for(let s=0;s<2;s++){const ev=slots.find(e=>e.day===d&&e.slot===s);mg+='<div class="pm-slot'+(ev?' '+ev.type:'')+'" title="'+(ev?ev.type:'')+'"></div>';}mg+='</div>';}
+    mg+='</div>';
+    html+='<div class="ref-card"><div class="ref-card-top"><div class="ref-avatar">'+initials+'</div><div style="flex:1;min-width:0"><div class="ref-name">'+r.name+'</div><div class="ref-detail">'+( r.poste||'Référent pédagogique')+'</div><div class="ref-detail"><i class="ti ti-building" style="font-size:11px"></i> '+(creche?.name||'—')+'</div><div class="ref-detail"><i class="ti ti-mail" style="font-size:11px"></i> '+(r.email||'—')+'</div></div></div><div class="planning-mini"><div class="planning-mini-title"><i class="ti ti-calendar" style="font-size:11px"></i> Planning cette semaine</div>'+(slots.length?mg:'<div style="font-size:11px;color:#aaa">Aucun créneau renseigné</div>')+'</div><div class="ref-actions"><button class="btn-purple" onclick="sendLink(\''+r.id+'\')"><i class="ti ti-link" style="font-size:12px"></i> Envoyer le lien</button><button class="ibtn" onclick="editRef(\''+r.id+'\')"><i class="ti ti-edit"></i></button><button class="ibtn del" onclick="deleteRef(\''+r.id+'\')"><i class="ti ti-trash"></i></button></div></div>';
   }
   grid.innerHTML=html;
 }
@@ -508,37 +407,12 @@ async function sendLink(refId){
   if(!r?.email){alert('Ce référent n\'a pas d\'adresse e-mail.');return;}
   const creche=creches.find(c=>c.id===r.crecheId);
   const ok=await callFn('send-referent-link',{referent:{id:r.id,name:r.name,email:r.email,creche:creche?.name||''}});
-  if(ok)showBanner(`Lien d'accès envoyé à ${r.name} !`);
-  else showBanner('Erreur lors de l\'envoi du lien.','error');
+  if(ok)showBanner('Lien envoyé à '+r.name+' !');else showBanner('Erreur lors de l\'envoi.','error');
 }
 
-function openRefModal(){
-  editingRefId=null;
-  document.getElementById('r-name').value='';document.getElementById('r-email').value='';document.getElementById('r-poste').value='';
-  const creches=getCreches();
-  document.getElementById('r-creche').innerHTML='<option value="">-- Choisir --</option>'+creches.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-  document.getElementById('modal-ref-title').textContent='Ajouter un référent';
-  document.getElementById('modal-ref-wrap').classList.add('open');
-}
-
-function editRef(id){
-  const refs=getReferents(),r=refs.find(x=>x.id===id);if(!r)return;
-  editingRefId=id;
-  const creches=getCreches();
-  document.getElementById('r-name').value=r.name;document.getElementById('r-email').value=r.email||'';document.getElementById('r-poste').value=r.poste||'';
-  document.getElementById('r-creche').innerHTML='<option value="">-- Choisir --</option>'+creches.map(c=>`<option value="${c.id}"${c.id===r.crecheId?' selected':''}>${c.name}</option>`).join('');
-  document.getElementById('modal-ref-title').textContent='Modifier le référent';
-  document.getElementById('modal-ref-wrap').classList.add('open');
-}
-
-function saveRef(){
-  const name=document.getElementById('r-name').value.trim();if(!name){alert('Nom requis.');return;}
-  const refs=getReferents();
-  if(editingRefId){const r=refs.find(x=>x.id===editingRefId);if(r){r.name=name;r.email=document.getElementById('r-email').value.trim();r.poste=document.getElementById('r-poste').value.trim();r.crecheId=document.getElementById('r-creche').value;}}
-  else refs.push({id:Date.now().toString(),name,email:document.getElementById('r-email').value.trim(),poste:document.getElementById('r-poste').value.trim(),crecheId:document.getElementById('r-creche').value});
-  save('referents_v1',refs);closeModal('modal-ref-wrap');renderReferents();
-}
-
+function openRefModal(){editingRefId=null;document.getElementById('r-name').value='';document.getElementById('r-email').value='';document.getElementById('r-poste').value='';const creches=getCreches();document.getElementById('r-creche').innerHTML='<option value="">-- Choisir --</option>'+creches.map(c=>'<option value="'+c.id+'">'+c.name+'</option>').join('');document.getElementById('modal-ref-title').textContent='Ajouter un référent';document.getElementById('modal-ref-wrap').classList.add('open');}
+function editRef(id){const refs=getReferents(),r=refs.find(x=>x.id===id);if(!r)return;editingRefId=id;const creches=getCreches();document.getElementById('r-name').value=r.name;document.getElementById('r-email').value=r.email||'';document.getElementById('r-poste').value=r.poste||'';document.getElementById('r-creche').innerHTML='<option value="">-- Choisir --</option>'+creches.map(c=>'<option value="'+c.id+'"'+(c.id===r.crecheId?' selected':'')+'>'+c.name+'</option>').join('');document.getElementById('modal-ref-title').textContent='Modifier le référent';document.getElementById('modal-ref-wrap').classList.add('open');}
+function saveRef(){const name=document.getElementById('r-name').value.trim();if(!name){alert('Nom requis.');return;}const refs=getReferents();if(editingRefId){const r=refs.find(x=>x.id===editingRefId);if(r){r.name=name;r.email=document.getElementById('r-email').value.trim();r.poste=document.getElementById('r-poste').value.trim();r.crecheId=document.getElementById('r-creche').value;}}else refs.push({id:Date.now().toString(),name,email:document.getElementById('r-email').value.trim(),poste:document.getElementById('r-poste').value.trim(),crecheId:document.getElementById('r-creche').value});save('referents_v1',refs);closeModal('modal-ref-wrap');renderReferents();}
 function deleteRef(id){if(!confirm('Supprimer ce référent ?'))return;save('referents_v1',getReferents().filter(r=>r.id!==id));renderReferents();}
 
 function closeModal(id){document.getElementById(id).classList.remove('open');}
@@ -548,17 +422,17 @@ function changeWeek(d){weekOffset+=d;renderPlanning();}
 function renderPlanning(){
   const ws=weekStart();const fmt=d=>d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'});
   const days5=Array.from({length:5},(_,i)=>{const d=new Date(ws);d.setDate(ws.getDate()+i);return d;});
-  document.getElementById('week-label').textContent=`${fmt(days5[0])} – ${fmt(days5[4])}`;
+  document.getElementById('week-label').textContent=fmt(days5[0])+' – '+fmt(days5[4]);
   const events=getEvents(),grid=document.getElementById('planning-grid');
   let html='<div class="pg-hd"></div>';
-  days5.forEach((d,i)=>{html+=`<div class="pg-hd">${DAYS[i]}<br><span style="font-size:10px;font-weight:400;opacity:0.6">${fmt(d)}</span></div>`;});
+  days5.forEach((d,i)=>{html+='<div class="pg-hd">'+DAYS[i]+'<br><span style="font-size:10px;font-weight:400;opacity:0.7">'+fmt(d)+'</span></div>';});
   ['Matin','Après-midi'].forEach((slot,si)=>{
-    html+=`<div class="pg-time">${slot}</div>`;
+    html+='<div class="pg-time">'+slot+'</div>';
     days5.forEach((_,di)=>{
       const evs=events.filter(e=>e.day===di&&e.slot===si);
-      html+=`<div class="pg-cell" onclick="openEventAt(${di},${si})">`;
-      if(!evs.length)html+=`<span style="font-size:10px;color:#aaa">+ ajouter</span>`;
-      evs.forEach(e=>{html+=`<div class="pg-ev ${e.type}" onclick="event.stopPropagation();delEvent('${e.id}')">${e.lieu} <i class="ti ti-x" style="font-size:10px;opacity:0.6"></i></div>`;});
+      html+='<div class="pg-cell" onclick="openEventAt('+di+','+si+')">';
+      if(!evs.length)html+='<span style="font-size:10px;color:#ccc">+ ajouter</span>';
+      evs.forEach(e=>{html+='<div class="pg-ev '+e.type+'" onclick="event.stopPropagation();delEvent(\''+e.id+'\')">'+e.lieu+' <i class="ti ti-x" style="font-size:10px;opacity:0.8"></i></div>';});
       html+='</div>';
     });
   });
