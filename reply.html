@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Koala Kids — Répondre à une consigne</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+.card{background:#fff;border-radius:16px;padding:2rem;max-width:520px;width:100%;border:1px solid #e5e5e0}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:#1D9E75;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+.logo-name{font-size:15px;font-weight:600}
+h2{font-size:17px;font-weight:600;margin-bottom:0.5rem}
+.subtitle{font-size:13px;color:#666;margin-bottom:1.5rem}
+.fg{margin-bottom:1rem}
+label{font-size:13px;color:#555;font-weight:500;display:block;margin-bottom:5px}
+textarea{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;resize:vertical;min-height:120px}
+textarea:focus{outline:none;border-color:#1D9E75}
+.btn{width:100%;padding:12px;background:#1D9E75;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;margin-top:0.5rem}
+.btn:hover{background:#0F6E56}
+.btn:disabled{opacity:0.6;cursor:not-allowed}
+.success{background:#E1F5EE;border:1px solid #0F6E56;color:#085041;padding:16px;border-radius:8px;text-align:center;display:none}
+.success h3{font-size:16px;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <div class="logo-icon">🐨</div>
+    <div class="logo-name">Koala Kids</div>
+  </div>
+  <h2 id="title">Répondre à la consigne</h2>
+  <p class="subtitle" id="subtitle">Chargement…</p>
+  <div id="form-area">
+    <div class="fg">
+      <label>Votre réponse</label>
+      <textarea id="message" placeholder="Écrivez votre réponse ici…"></textarea>
+    </div>
+    <button class="btn" id="btn-send" onclick="sendReply()">Envoyer ma réponse</button>
+  </div>
+  <div class="success" id="success-box">
+    <h3>✅ Réponse envoyée !</h3>
+    <p>Votre réponse a bien été transmise à la coordinatrice.</p>
+  </div>
+</div>
+<script>
+const SUPABASE_URL = "https://juyrceadazrovlitxceb.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1eXJjZWFkYXpyb3ZsaXR4Y2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MjcyMDIsImV4cCI6MjA5NTQwMzIwMn0.yTEoRjhJFm3qj5oY2tLIcCXOWHHbU3rxWoIn47QKmug";
+
+const params = new URLSearchParams(window.location.search);
+const consigneId = params.get('id');
+const referentName = decodeURIComponent(params.get('name') || '');
+const consigneSubject = decodeURIComponent(params.get('subject') || 'Consigne');
+const creche = decodeURIComponent(params.get('creche') || '');
+const referentEmail = decodeURIComponent(params.get('email') || '');
+
+document.getElementById('title').textContent = `Répondre : ${consigneSubject}`;
+document.getElementById('subtitle').textContent = `Bonjour ${referentName}, répondez à la consigne ci-dessous.`;
+
+async function sendReply() {
+  const message = document.getElementById('message').value.trim();
+  if (!message) { alert('Veuillez écrire votre réponse.'); return; }
+  const btn = document.getElementById('btn-send');
+  btn.disabled = true; btn.textContent = 'Envoi…';
+  try {
+    await fetch(`${SUPABASE_URL}/functions/v1/receive-reply`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
+      body: JSON.stringify({ reply: { consigneId, consigneSubject, referentName, referentEmail, message, creche, date: new Date().toLocaleDateString('fr-FR') } })
+    });
+    document.getElementById('form-area').style.display = 'none';
+    document.getElementById('success-box').style.display = 'block';
+  } catch(e) {
+    alert('Erreur lors de l\'envoi. Réessayez.');
+    btn.disabled = false; btn.textContent = 'Envoyer ma réponse';
+  }
+}
+</script>
+</body>
+</html>
