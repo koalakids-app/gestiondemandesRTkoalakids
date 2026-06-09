@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Koala Kids — Gestion des demandes</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a1a;min-height:100vh}
+.app{max-width:960px;margin:0 auto;padding:1rem}
+.header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1.25rem;background:#fff;border:1px solid #e5e5e0;border-radius:12px;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:#1D9E75;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+.logo-name{font-size:15px;font-weight:600}
+.logo-sub{font-size:12px;color:#666}
+.main-nav{display:flex;gap:6px}
+.mnav-btn{padding:6px 14px;border:1px solid #ddd;border-radius:8px;background:transparent;cursor:pointer;font-size:13px;color:#666;display:flex;align-items:center;gap:6px}
+.mnav-btn.active{background:#E1F5EE;border-color:#0F6E56;color:#085041;font-weight:500}
+.mnav-btn:hover:not(.active){background:#f5f5f0}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.notif-banner{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:1rem;display:none;align-items:center;gap:8px}
+.notif-banner.success{background:#E1F5EE;color:#085041;border:1px solid #0F6E56;display:flex}
+.notif-banner.error{background:#FAECE7;color:#993C1D;border:1px solid #D85A30;display:flex}
+.creche-tabs-bar{display:flex;align-items:center;border-bottom:1px solid #e5e5e0;margin-bottom:1rem;overflow-x:auto;flex-wrap:nowrap}
+.creche-tab{padding:9px 16px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:#666;white-space:nowrap;background:transparent;border-top:none;border-left:none;border-right:none;display:flex;align-items:center;gap:6px}
+.creche-tab.active{color:#0F6E56;border-bottom-color:#1D9E75;font-weight:600}
+.creche-tab:hover:not(.active){background:#f5f5f0}
+.tab-count{background:#E1F5EE;color:#085041;font-size:10px;padding:1px 7px;border-radius:10px;font-weight:600}
+.creche-tab.active .tab-count{background:#1D9E75;color:#fff}
+.add-creche-btn{padding:7px 14px;border:1px dashed #ccc;border-radius:8px;background:transparent;cursor:pointer;font-size:13px;color:#666;display:flex;align-items:center;gap:5px;white-space:nowrap;margin-left:8px;flex-shrink:0}
+.add-creche-btn:hover{background:#f5f5f0}
+.stats-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:1rem}
+.stat-card{background:#f5f5f0;border-radius:8px;padding:0.75rem 1rem}
+.stat-label{font-size:12px;color:#666;margin-bottom:4px}
+.stat-val{font-size:22px;font-weight:600}
+.cteal{color:#0F6E56}.camber{color:#BA7517}.ccoral{color:#993C1D}.cblue{color:#185FA5}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:8px}
+.section-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.section-title{font-size:15px;font-weight:600}
+.btn-primary{padding:8px 16px;background:#1D9E75;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;font-weight:500}
+.btn-primary:hover{background:#0F6E56}
+.btn-primary:disabled{opacity:0.6;cursor:not-allowed}
+.search-inp{padding:7px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;font-size:13px;width:190px}
+.search-inp:focus{outline:none;border-color:#1D9E75}
+.filters{display:flex;gap:6px;margin-bottom:0.75rem;flex-wrap:wrap}
+.fchip{padding:5px 12px;border:1px solid #e5e5e0;border-radius:20px;background:transparent;cursor:pointer;font-size:12px;color:#666}
+.fchip.active{background:#E1F5EE;border-color:#0F6E56;color:#085041;font-weight:500}
+.fchip:hover:not(.active){background:#f5f5f0}
+.demands-list{display:flex;flex-direction:column;gap:8px}
+.dcard{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:0.875rem 1.1rem;display:flex;align-items:flex-start;gap:12px}
+.dcard.urgent{border-left:3px solid #D85A30;border-radius:0 12px 12px 0}
+.dcard.normal{border-left:3px solid #1D9E75;border-radius:0 12px 12px 0}
+.dcard.info{border-left:3px solid #378ADD;border-radius:0 12px 12px 0}
+.dmeta{flex:1;min-width:0}
+.dtop{display:flex;align-items:center;gap:7px;margin-bottom:4px;flex-wrap:wrap}
+.dsubject{font-size:14px;font-weight:600}
+.dbody{font-size:13px;color:#555;line-height:1.5;margin-bottom:6px}
+.dfoot{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge{padding:2px 9px;border-radius:12px;font-size:11px;font-weight:600}
+.b-urgent{background:#FAECE7;color:#993C1D}
+.b-normal{background:#E1F5EE;color:#085041}
+.b-info{background:#E6F1FB;color:#0C447C}
+.b-attente{background:#FAEEDA;color:#854F0B}
+.b-traite{background:#EAF3DE;color:#27500A}
+.b-ref{background:#f5f5f0;color:#555}
+.meta-txt{font-size:12px;color:#888}
+.notif-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:#E6F1FB;color:#0C447C;border-radius:12px;font-size:11px;font-weight:500}
+.dactions{display:flex;gap:5px;flex-shrink:0}
+.ibtn{width:32px;height:32px;border:1px solid #e5e5e0;border-radius:8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#888;font-size:15px}
+.ibtn:hover{background:#f5f5f0;color:#1a1a1a}
+.ibtn.del:hover{background:#FAECE7;color:#993C1D;border-color:#D85A30}
+.empty-state{text-align:center;padding:3rem;color:#888}
+.empty-state i{font-size:40px;margin-bottom:1rem;display:block;opacity:0.3}
+.creche-header-box{background:#f5f5f0;border-radius:12px;padding:0.875rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.creche-header-name{font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px}
+.btn-danger-sm{padding:5px 12px;border:1px solid #D85A30;border-radius:8px;background:transparent;cursor:pointer;font-size:12px;color:#993C1D;display:flex;align-items:center;gap:5px}
+.btn-danger-sm:hover{background:#FAECE7}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;align-items:center;justify-content:center;padding:1rem}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:520px;border:1px solid #e5e5e0;max-height:90vh;overflow-y:auto}
+.modal h3{font-size:17px;font-weight:600;margin-bottom:1.25rem}
+.fg{margin-bottom:1rem}
+.flabel{font-size:13px;color:#555;margin-bottom:5px;display:block;font-weight:500}
+.finput{width:100%;padding:9px 11px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;font-size:13px}
+.finput:focus{outline:none;border-color:#1D9E75}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mactions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem}
+.btn-cancel{padding:8px 16px;border:1px solid #ddd;border-radius:8px;background:transparent;cursor:pointer;font-size:13px;color:#555}
+.info-box{background:#E6F1FB;border-radius:8px;padding:10px 12px;font-size:12px;color:#0C447C;display:flex;align-items:center;gap:8px;margin-bottom:1rem}
+.planning-grid{display:grid;grid-template-columns:110px repeat(5,1fr);gap:0;border:1px solid #e5e5e0;border-radius:12px;overflow:hidden}
+.pg-hd{background:#f5f5f0;padding:9px;font-size:12px;font-weight:600;text-align:center;border-bottom:1px solid #e5e5e0;border-right:1px solid #e5e5e0}
+.pg-hd:last-child{border-right:none}
+.pg-time{background:#f5f5f0;padding:9px 7px;font-size:11px;color:#888;border-right:1px solid #e5e5e0;border-bottom:1px solid #e5e5e0;display:flex;align-items:center}
+.pg-cell{padding:5px;border-right:1px solid #e5e5e0;border-bottom:1px solid #e5e5e0;min-height:60px;cursor:pointer;background:#fff}
+.pg-cell:last-child{border-right:none}
+.pg-cell:hover{background:#f9f9f6}
+.pg-ev{border-radius:6px;padding:4px 7px;font-size:11px;margin-bottom:3px;cursor:pointer;font-weight:500}
+.pg-ev.presence{background:#E1F5EE;color:#085041;border-left:2px solid #0F6E56}
+.pg-ev.absent{background:#FAEEDA;color:#633806;border-left:2px solid #BA7517}
+.pg-ev.formation{background:#E6F1FB;color:#0C447C;border-left:2px solid #185FA5}
+.pg-ev.reunion{background:#EEEDFE;color:#3C3489;border-left:2px solid #534AB7}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:0.75rem}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#666}
+.leg-dot{width:10px;height:10px;border-radius:2px}
+.week-nav{display:flex;align-items:center;gap:10px}
+.week-nav span{font-size:14px;font-weight:500}
+@media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr)}.frow{grid-template-columns:1fr}.header{gap:12px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon"><i class="ti ti-baby-carriage"></i></div>
+      <div>
+        <div class="logo-name">Koala Kids — Gestion des demandes</div>
+        <div class="logo-sub">Référents pédagogiques & Planning</div>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <button class="mnav-btn active" onclick="showMain('demands')" id="mnav-demands"><i class="ti ti-message-circle"></i> Demandes</button>
+      <button class="mnav-btn" onclick="showMain('planning')" id="mnav-planning"><i class="ti ti-calendar-event"></i> Planning</button>
+    </nav>
+  </div>
+
+  <div id="notif-banner" class="notif-banner"></div>
+
+  <div id="main-demands" class="tab-content active">
+    <div id="creche-tabs-bar" class="creche-tabs-bar"></div>
+    <div id="creche-panel"></div>
+  </div>
+
+  <div id="main-planning" class="tab-content">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:8px">
+      <div class="week-nav">
+        <button class="ibtn" onclick="changeWeek(-1)"><i class="ti ti-chevron-left"></i></button>
+        <span id="week-label">—</span>
+        <button class="ibtn" onclick="changeWeek(1)"><i class="ti ti-chevron-right"></i></button>
+      </div>
+      <button class="btn-primary" onclick="openEventModal()"><i class="ti ti-plus"></i> Ajouter</button>
+    </div>
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#1D9E75"></div> Présence</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#BA7517"></div> Absent</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#378ADD"></div> Formation</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#534AB7"></div> Réunion</div>
+    </div>
+    <div class="planning-grid" id="planning-grid"></div>
+  </div>
+</div>
+
+<div class="overlay" id="modal-demand-wrap">
+  <div class="modal">
+    <h3 id="modal-d-title">Nouvelle demande</h3>
+    <div class="frow">
+      <div class="fg"><label class="flabel">Référent pédagogique</label><input class="finput" id="d-ref" placeholder="Nom du référent"/></div>
+      <div class="fg"><label class="flabel">E-mail du référent</label><input class="finput" id="d-email" placeholder="referent@email.fr" type="email"/></div>
+    </div>
+    <div class="fg"><label class="flabel">Sujet</label><input class="finput" id="d-subj" placeholder="Ex. : Réaménagement espace jeux"/></div>
+    <div class="fg"><label class="flabel">Description</label><textarea class="finput" id="d-desc" rows="3" placeholder="Détails…" style="resize:vertical"></textarea></div>
+    <div class="frow">
+      <div class="fg"><label class="flabel">Priorité</label><select class="finput" id="d-prio"><option value="normal">Normale</option><option value="urgent">Urgente</option><option value="info">Information</option></select></div>
+      <div class="fg"><label class="flabel">Thème</label><select class="finput" id="d-theme"><option>Pédagogie</option><option>Matériel</option><option>Formation</option><option>Organisation</option><option>Autre</option></select></div>
+    </div>
+    <div class="info-box"><i class="ti ti-mail" style="font-size:15px"></i> Un e-mail de confirmation sera envoyé au référent et à l'administrateur.</div>
+    <div class="mactions">
+      <button class="btn-cancel" onclick="closeModal('modal-demand-wrap')">Annuler</button>
+      <button class="btn-primary" id="btn-save-demand" onclick="saveDemand()"><i class="ti ti-check"></i> Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="modal-creche-wrap">
+  <div class="modal">
+    <h3>Ajouter une crèche</h3>
+    <div class="fg"><label class="flabel">Nom de la crèche</label><input class="finput" id="c-name" placeholder="Ex. : Les Petits Lutins"/></div>
+    <div class="fg"><label class="flabel">Adresse (optionnel)</label><input class="finput" id="c-addr" placeholder="Adresse"/></div>
+    <div class="mactions">
+      <button class="btn-cancel" onclick="closeModal('modal-creche-wrap')">Annuler</button>
+      <button class="btn-primary" onclick="saveCreche()"><i class="ti ti-check"></i> Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="modal-event-wrap">
+  <div class="modal">
+    <h3>Ajouter au planning</h3>
+    <div class="frow">
+      <div class="fg"><label class="flabel">Jour</label><select class="finput" id="e-day"><option value="0">Lundi</option><option value="1">Mardi</option><option value="2">Mercredi</option><option value="3">Jeudi</option><option value="4">Vendredi</option></select></div>
+      <div class="fg"><label class="flabel">Demi-journée</label><select class="finput" id="e-slot"><option value="0">Matin</option><option value="1">Après-midi</option></select></div>
+    </div>
+    <div class="fg"><label class="flabel">Crèche / Lieu</label><input class="finput" id="e-lieu" placeholder="Nom de la crèche ou lieu"/></div>
+    <div class="fg"><label class="flabel">Type</label><select class="finput" id="e-type"><option value="presence">Présence crèche</option><option value="absent">Absent / Congé</option><option value="formation">Formation</option><option value="reunion">Réunion</option></select></div>
+    <div class="mactions">
+      <button class="btn-cancel" onclick="closeModal('modal-event-wrap')">Annuler</button>
+      <button class="btn-primary" onclick="saveEvent()"><i class="ti ti-check"></i> Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL="https://juyrceadazrovlitxceb.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1eXJjZWFkYXpyb3ZsaXR4Y2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MjcyMDIsImV4cCI6MjA5NTQwMzIwMn0.yTEoRjhJFm3qj5oY2tLIcCXOWHHbU3rxWoIn47QKmug";
+const DAYS=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
+let activeCrecheId=null,activeFilter='all',editingDemandId=null,weekOffset=0;
+
+async function callFn(fn,body){try{const r=await fetch(`${SUPABASE_URL}/functions/v1/${fn}`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_ANON_KEY}`},body:JSON.stringify(body)});return r.ok;}catch{return false;}}
+
+function showBanner(msg,type='success'){const b=document.getElementById('notif-banner');b.className=`notif-banner ${type}`;b.innerHTML=`<i class="ti ti-${type==='success'?'circle-check':'alert-circle'}"></i> ${msg}`;setTimeout(()=>{b.style.display='none';b.className='notif-banner';},5000);}
+
+function load(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch{return null;}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){console.error(e);}}
+function getCreches(){return load('creches_v2')||[];}
+function getDemands(){return load('demands_v2')||[];}
+function weekStart(){const n=new Date();const d=n.getDay();const diff=n.getDate()-(d===0?6:d-1);const m=new Date(n.setDate(diff+weekOffset*7));m.setHours(0,0,0,0);return m;}
+function getEvents(){return load('events_'+weekStart().toISOString().slice(0,10))||[];}
+
+function showMain(tab){
+  document.getElementById('main-demands').classList.toggle('active',tab==='demands');
+  document.getElementById('main-planning').classList.toggle('active',tab==='planning');
+  document.getElementById('mnav-demands').classList.toggle('active',tab==='demands');
+  document.getElementById('mnav-planning').classList.toggle('active',tab==='planning');
+  if(tab==='planning')renderPlanning();
+  if(tab==='demands')renderCrecheTabs();
+}
+
+function renderCrecheTabs(){
+  const creches=getCreches(),demands=getDemands();
+  const bar=document.getElementById('creche-tabs-bar');
+  if(!creches.length){activeCrecheId=null;}
+  else if(!activeCrecheId||!creches.find(c=>c.id===activeCrecheId)){activeCrecheId=creches[0].id;}
+  let html='';
+  creches.forEach(c=>{
+    const count=demands.filter(d=>d.crecheId===c.id).length;
+    html+=`<button class="creche-tab${activeCrecheId===c.id?' active':''}" onclick="selectCreche('${c.id}')"><i class="ti ti-building" style="font-size:13px"></i> ${c.name}<span class="tab-count">${count}</span></button>`;
+  });
+  html+=`<button class="add-creche-btn" onclick="openCrecheModal()"><i class="ti ti-plus"></i> Ajouter une crèche</button>`;
+  bar.innerHTML=html;
+  renderCrechePanel();
+}
+
+function selectCreche(id){activeCrecheId=id;activeFilter='all';renderCrecheTabs();}
+
+function renderCrechePanel(){
+  const panel=document.getElementById('creche-panel');
+  const creches=getCreches(),demands=getDemands();
+  if(!creches.length){panel.innerHTML=`<div class="empty-state"><i class="ti ti-building-off"></i><p>Aucune crèche. Ajoutez votre première crèche.</p></div>`;return;}
+  const creche=creches.find(c=>c.id===activeCrecheId);
+  if(!creche){panel.innerHTML='';return;}
+  const all=demands.filter(d=>d.crecheId===creche.id);
+  const search=(document.getElementById('search-d')||{value:''}).value.toLowerCase();
+  let filtered=all.filter(d=>{
+    if(activeFilter==='urgent'&&d.priority!=='urgent')return false;
+    if(activeFilter==='attente'&&d.status!=='attente')return false;
+    if(activeFilter==='traite'&&d.status!=='traite')return false;
+    if(search&&!d.subject.toLowerCase().includes(search)&&!d.referent.toLowerCase().includes(search))return false;
+    return true;
+  });
+  const total=all.length,attente=all.filter(d=>d.status==='attente').length,urgent=all.filter(d=>d.priority==='urgent').length,traite=all.filter(d=>d.status==='traite').length;
+  let html=`<div class="creche-header-box"><div class="creche-header-name"><i class="ti ti-building" style="font-size:18px;color:#1D9E75"></i> ${creche.name}${creche.addr?`<span style="font-size:12px;color:#888;font-weight:400">${creche.addr}</span>`:''}</div><button class="btn-danger-sm" onclick="deleteCreche('${creche.id}')"><i class="ti ti-trash" style="font-size:13px"></i> Supprimer</button></div>
+  <div class="stats-row"><div class="stat-card"><div class="stat-label">Demandes</div><div class="stat-val cteal">${total}</div></div><div class="stat-card"><div class="stat-label">En attente</div><div class="stat-val camber">${attente}</div></div><div class="stat-card"><div class="stat-label">Urgentes</div><div class="stat-val ccoral">${urgent}</div></div><div class="stat-card"><div class="stat-label">Traitées</div><div class="stat-val cblue">${traite}</div></div></div>
+  <div class="section-header"><div class="section-left"><span class="section-title">Demandes</span><input class="search-inp" id="search-d" type="text" placeholder="Rechercher…" oninput="renderCrechePanel()"></div><button class="btn-primary" onclick="openDemandModal()"><i class="ti ti-plus"></i> Nouvelle demande</button></div>
+  <div class="filters"><button class="fchip${activeFilter==='all'?' active':''}" onclick="setFilter('all')">Toutes</button><button class="fchip${activeFilter==='urgent'?' active':''}" onclick="setFilter('urgent')">Urgentes</button><button class="fchip${activeFilter==='attente'?' active':''}" onclick="setFilter('attente')">En attente</button><button class="fchip${activeFilter==='traite'?' active':''}" onclick="setFilter('traite')">Traitées</button></div>
+  <div class="demands-list">`;
+  if(!filtered.length){html+=`<div class="empty-state"><i class="ti ti-inbox"></i><p>Aucune demande pour cette crèche.</p></div>`;}
+  else filtered.forEach(d=>{html+=`<div class="dcard ${d.priority}"><div class="dmeta"><div class="dtop"><span class="dsubject">${d.subject}</span><span class="badge b-${d.priority}">${d.priority==='urgent'?'Urgent':d.priority==='info'?'Info':'Normal'}</span><span class="badge" style="background:#f5f5f0;color:#555">${d.theme||'Autre'}</span>${d.referentEmail?`<span class="notif-pill"><i class="ti ti-mail" style="font-size:11px"></i> notif activée</span>`:''}</div><div class="dbody">${d.desc||'—'}</div><div class="dfoot"><span class="badge b-ref"><i class="ti ti-user" style="font-size:11px"></i> ${d.referent}</span>${d.referentEmail?`<span class="meta-txt">${d.referentEmail}</span>`:''}<span class="meta-txt">${d.date}</span><span class="badge b-${d.status||'attente'}">${d.status==='traite'?'Traitée':'En attente'}</span></div></div><div class="dactions"><button class="ibtn" title="Changer statut" onclick="toggleStatus('${d.id}')"><i class="ti ti-${d.status==='traite'?'rotate-clockwise':'check'}"></i></button><button class="ibtn" title="Modifier" onclick="editDemand('${d.id}')"><i class="ti ti-edit"></i></button><button class="ibtn del" title="Supprimer" onclick="deleteDemand('${d.id}')"><i class="ti ti-trash"></i></button></div></div>`;});
+  html+='</div>';
+  panel.innerHTML=html;
+}
+
+function setFilter(f){activeFilter=f;renderCrechePanel();}
+
+function openDemandModal(){editingDemandId=null;['d-ref','d-email','d-subj','d-desc'].forEach(id=>document.getElementById(id).value='');document.getElementById('d-prio').value='normal';document.getElementById('d-theme').value='Pédagogie';document.getElementById('modal-d-title').textContent='Nouvelle demande';document.getElementById('modal-demand-wrap').classList.add('open');}
+
+function editDemand(id){const demands=getDemands();const d=demands.find(x=>x.id===id);if(!d)return;editingDemandId=id;document.getElementById('d-ref').value=d.referent;document.getElementById('d-email').value=d.referentEmail||'';document.getElementById('d-subj').value=d.subject;document.getElementById('d-desc').value=d.desc||'';document.getElementById('d-prio').value=d.priority;document.getElementById('d-theme').value=d.theme||'Pédagogie';document.getElementById('modal-d-title').textContent='Modifier la demande';document.getElementById('modal-demand-wrap').classList.add('open');}
+
+async function saveDemand(){
+  const ref=document.getElementById('d-ref').value.trim(),subj=document.getElementById('d-subj').value.trim();
+  if(!ref||!subj){alert('Référent et sujet sont requis.');return;}
+  const btn=document.getElementById('btn-save-demand');
+  btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i> Envoi…';
+  const demands=getDemands(),creches=getCreches(),creche=creches.find(c=>c.id===activeCrecheId);
+  const referentEmail=document.getElementById('d-email').value.trim();
+  if(editingDemandId){const d=demands.find(x=>x.id===editingDemandId);if(d){d.referent=ref;d.referentEmail=referentEmail;d.subject=subj;d.desc=document.getElementById('d-desc').value.trim();d.priority=document.getElementById('d-prio').value;d.theme=document.getElementById('d-theme').value;}}
+  else{const newD={id:Date.now().toString(),crecheId:activeCrecheId,referent:ref,referentEmail,subject:subj,desc:document.getElementById('d-desc').value.trim(),priority:document.getElementById('d-prio').value,theme:document.getElementById('d-theme').value,status:'attente',date:new Date().toLocaleDateString('fr-FR')};demands.unshift(newD);const ok=await callFn('notify-demand',{demand:{...newD,creche:creche?.name||''}});if(ok)showBanner('Demande enregistrée — e-mails envoyés !');else showBanner('Demande enregistrée (notification non disponible).','error');}
+  save('demands_v2',demands);
+  btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i> Enregistrer';
+  closeModal('modal-demand-wrap');renderCrecheTabs();
+}
+
+async function toggleStatus(id){
+  const demands=getDemands(),creches=getCreches(),d=demands.find(x=>x.id===id);
+  if(!d)return;d.status=d.status==='traite'?'attente':'traite';
+  save('demands_v2',demands);
+  const creche=creches.find(c=>c.id===d.crecheId);
+  const ok=await callFn('notify-status',{demand:{...d,creche:creche?.name||''},newStatus:d.status});
+  if(ok)showBanner(`Demande "${d.status==='traite'?'traitée':'remise en attente'}" — notification envoyée !`);
+  renderCrecheTabs();
+}
+
+function deleteDemand(id){if(!confirm('Supprimer cette demande ?'))return;save('demands_v2',getDemands().filter(d=>d.id!==id));renderCrecheTabs();}
+
+function openCrecheModal(){document.getElementById('c-name').value='';document.getElementById('c-addr').value='';document.getElementById('modal-creche-wrap').classList.add('open');}
+
+function saveCreche(){const name=document.getElementById('c-name').value.trim();if(!name){alert('Nom requis.');return;}const creches=getCreches();const newC={id:Date.now().toString(),name,addr:document.getElementById('c-addr').value.trim()};creches.push(newC);save('creches_v2',creches);activeCrecheId=newC.id;closeModal('modal-creche-wrap');renderCrecheTabs();}
+
+function deleteCreche(id){if(!confirm('Supprimer cette crèche et toutes ses demandes ?'))return;save('creches_v2',getCreches().filter(c=>c.id!==id));save('demands_v2',getDemands().filter(d=>d.crecheId!==id));const creches=getCreches();activeCrecheId=creches.length?creches[0].id:null;renderCrecheTabs();}
+
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
+
+function changeWeek(d){weekOffset+=d;renderPlanning();}
+
+function renderPlanning(){
+  const ws=weekStart();const fmt=d=>d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'});
+  const days5=Array.from({length:5},(_,i)=>{const d=new Date(ws);d.setDate(ws.getDate()+i);return d;});
+  document.getElementById('week-label').textContent=`${fmt(days5[0])} – ${fmt(days5[4])}`;
+  const events=getEvents(),grid=document.getElementById('planning-grid');
+  let html='<div class="pg-hd"></div>';
+  days5.forEach((d,i)=>{html+=`<div class="pg-hd">${DAYS[i]}<br><span style="font-size:10px;font-weight:400;opacity:0.6">${fmt(d)}</span></div>`;});
+  ['Matin','Après-midi'].forEach((slot,si)=>{
+    html+=`<div class="pg-time">${slot}</div>`;
+    days5.forEach((_,di)=>{
+      const evs=events.filter(e=>e.day===di&&e.slot===si);
+      html+=`<div class="pg-cell" onclick="openEventAt(${di},${si})">`;
+      if(!evs.length)html+=`<span style="font-size:10px;color:#aaa">+ ajouter</span>`;
+      evs.forEach(e=>{html+=`<div class="pg-ev ${e.type}" onclick="event.stopPropagation();delEvent('${e.id}')">${e.lieu} <i class="ti ti-x" style="font-size:10px;opacity:0.6"></i></div>`;});
+      html+='</div>';
+    });
+  });
+  grid.innerHTML=html;
+}
+
+function openEventModal(){document.getElementById('e-day').value='0';document.getElementById('e-slot').value='0';document.getElementById('e-lieu').value='';document.getElementById('e-type').value='presence';document.getElementById('modal-event-wrap').classList.add('open');}
+function openEventAt(d,s){document.getElementById('e-day').value=d;document.getElementById('e-slot').value=s;document.getElementById('e-lieu').value='';document.getElementById('e-type').value='presence';document.getElementById('modal-event-wrap').classList.add('open');}
+
+function saveEvent(){const lieu=document.getElementById('e-lieu').value.trim();if(!lieu){alert('Indiquez un lieu.');return;}const key='events_'+weekStart().toISOString().slice(0,10);const events=load(key)||[];events.push({id:Date.now().toString(),day:parseInt(document.getElementById('e-day').value),slot:parseInt(document.getElementById('e-slot').value),lieu,type:document.getElementById('e-type').value});save(key,events);closeModal('modal-event-wrap');renderPlanning();}
+
+function delEvent(id){const key='events_'+weekStart().toISOString().slice(0,10);save(key,(load(key)||[]).filter(e=>e.id!==id));renderPlanning();}
+
+renderCrecheTabs();
+</script>
+</body>
+</html>
