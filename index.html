@@ -549,7 +549,58 @@ function resetDemoData(){
 }
 
 // ─── API ────────────────────────────────────────────────────────
-// FIX: callFn silencieux, pas de logs d'erreur réseau en console
+// ─── CONFIG EMAIL RESEND (envoi direct depuis le navigateur) ────
+const RESEND_API_KEY="re_YDaT7qQf_7EdouqZM6YF2VgZ9aWzaJ9oP";
+const ADMIN_EMAIL="cp1.koalakids@outlook.fr";
+const FROM_EMAIL="onboarding@resend.dev";
+const APP_URL="https://koalakids-app.github.io/gestiondemandesRTkoalakids/";
+
+async function sendEmail(to,subject,html){
+  try{
+    const r=await fetch("https://api.resend.com/emails",{method:"POST",
+      headers:{"Authorization":"Bearer "+RESEND_API_KEY,"Content-Type":"application/json"},
+      body:JSON.stringify({from:FROM_EMAIL,to,subject,html})});
+    const d=await r.json();if(!r.ok){console.warn("Resend:",d);return false;}return true;
+  }catch(e){console.warn("sendEmail:",e);return false;}
+}
+function emailTpl(sousTitre,contenu,btnLabel,btnUrl){
+  return`<div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#f4f4f6;padding:20px"><div style="background:#3D3580;border-radius:12px 12px 0 0;padding:20px 24px;text-align:center"><h1 style="color:#fff;margin:0;font-size:22px">🐨 Koala Kids</h1><p style="color:rgba(255,255,255,0.8);margin:4px 0 0;font-size:13px">${sousTitre}</p></div><div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0dff0;border-top:none">${contenu}${btnLabel?`<div style="text-align:center;margin:24px 0 8px"><a href="${btnUrl}" style="background:#3D3580;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px">${btnLabel}</a></div>`:''}</div><p style="text-align:center;color:#aaa;font-size:11px;margin-top:12px">© Koala Kids — Message automatique</p></div>`;
+}
+async function notifyDemand(demand){
+  const {subject,referent,referentEmail,creche,priority,desc,date}=demand;
+  const pc=priority==='urgent'?'#e03e3e':priority==='info'?'#F47920':'#3D3580';
+  const pl=priority==='urgent'?'🔴 Urgente':priority==='info'?'ℹ️ Info':'Normale';
+  const bloc=`<div style="background:#f8f7ff;border-left:4px solid ${pc};border-radius:0 8px 8px 0;padding:16px;margin:16px 0"><div style="font-size:11px;color:#888;margin-bottom:6px">${creche||''}</div><h2 style="margin:0 0 8px;color:#1a1a1a;font-size:16px">${subject}</h2><p style="margin:0 0 10px;color:#555;font-size:13px;line-height:1.5">${desc||'—'}</p><span style="background:${pc};color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700">${pl}</span>${date?`<span style="background:#f0f0f0;color:#555;padding:3px 10px;border-radius:12px;font-size:12px;margin-left:6px">${date}</span>`:''}</div>`;
+  const res=[];
+  if(referentEmail)res.push(await sendEmail(referentEmail,`✅ Votre demande "${subject}" a été transmise — Koala Kids`,emailTpl('Suite de gestion pédagogique',`<p style="color:#555;margin-top:0">Bonjour <strong>${referent||'Référent'}</strong>,</p><p style="color:#555">Votre demande a bien été transmise à la direction.</p>${bloc}`,'Voir l\'application →',APP_URL)));
+  if(ADMIN_EMAIL)res.push(await sendEmail(ADMIN_EMAIL,`📬 Nouvelle demande${priority==='urgent'?' 🔴 URGENTE':''} — ${creche} — ${subject}`,emailTpl('Suite de gestion pédagogique',`<p style="color:#555;margin-top:0">Bonjour,</p><p style="color:#555">Nouvelle demande de <strong>${referent||'—'}</strong> — crèche <strong>${creche||'—'}</strong>.</p>${bloc}`,'Gérer la demande →',APP_URL)));
+  return res.some(Boolean);
+}
+async function notifyConsigne(consigne){
+  const {id,subject,message,referent,referentEmail,creche,priority}=consigne;
+  const replyUrl=`${APP_URL}referent.html?id=${id}&name=${encodeURIComponent(referent||'')}&creche=${encodeURIComponent(creche||'')}`;
+  const pc=priority==='urgent'?'#e03e3e':priority==='info'?'#F47920':'#3D3580';
+  const bloc=`<div style="background:#fff3e0;border-left:4px solid #F47920;border-radius:0 8px 8px 0;padding:16px;margin:16px 0"><div style="font-size:11px;color:#F47920;font-weight:700;margin-bottom:6px">📋 CONSIGNE — ${creche||''}</div><h2 style="margin:0 0 10px;color:#1a1a1a;font-size:16px">${subject}</h2><p style="margin:0 0 10px;color:#555;font-size:13px;line-height:1.5;white-space:pre-line">${message||'—'}</p><span style="background:${pc};color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700">${priority==='urgent'?'🔴 Urgente':priority==='info'?'ℹ️ Info':'Normale'}</span></div>`;
+  const res=[];
+  if(referentEmail)res.push(await sendEmail(referentEmail,`📋 Consigne : "${subject}" — Koala Kids`,emailTpl('Nouvelle consigne de la direction',`<p style="color:#555;margin-top:0">Bonjour <strong>${referent||'Référent'}</strong>,</p><p style="color:#555">Vous avez reçu une consigne de la direction.</p>${bloc}<p style="color:#555;font-size:13px">Cliquez ci-dessous pour répondre :</p>`,'📩 Répondre à cette consigne →',replyUrl)));
+  if(ADMIN_EMAIL)res.push(await sendEmail(ADMIN_EMAIL,`✅ Consigne envoyée à ${referent} — ${creche}`,emailTpl('Confirmation',`<p style="color:#555">Consigne <strong>"${subject}"</strong> envoyée à <strong>${referent}</strong> (${referentEmail||'—'}).</p>${bloc}`,'',''));
+  return res.some(Boolean);
+}
+async function notifyStatus(demand,newStatus){
+  const {subject,referent,referentEmail,creche}=demand;
+  if(!referentEmail)return false;
+  const isT=newStatus==='traite';
+  const sc=isT?'#2a9d4e':'#F47920';
+  const sl=isT?'✅ Traitée':'⏳ Remise en attente';
+  return await sendEmail(referentEmail,`${isT?'✅':'⏳'} Votre demande "${subject}" — ${sl}`,emailTpl('Mise à jour de votre demande',`<p style="color:#555;margin-top:0">Bonjour <strong>${referent||'Référent'}</strong>,</p><p style="color:#555">Le statut de votre demande a été mis à jour.</p><div style="background:#f8f7ff;border-left:4px solid ${sc};border-radius:0 8px 8px 0;padding:16px;margin:16px 0"><div style="font-size:11px;color:#888;margin-bottom:4px">${creche||''}</div><h2 style="margin:0 0 10px;color:#1a1a1a;font-size:16px">${subject}</h2><span style="background:${sc};color:#fff;padding:4px 14px;border-radius:12px;font-size:13px;font-weight:700">${sl}</span>${isT?`<p style="margin:10px 0 0;color:#2a9d4e;font-size:12px">Traitée le ${new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})}</p>`:''}</div>`,'Voir l\'application →',APP_URL));
+}
+async function sendReferentLink(ref){
+  const {id,name,email,creche}=ref;
+  if(!email)return false;
+  const refUrl=`${APP_URL}referent.html?id=${id}&name=${encodeURIComponent(name||'')}&creche=${encodeURIComponent(creche||'')}`;
+  return await sendEmail(email,`🐨 Votre accès Koala Kids — ${creche||'Espace référent'}`,emailTpl('Espace référent pédagogique',`<p style="color:#555;margin-top:0">Bonjour <strong>${name}</strong>,</p><p style="color:#555;line-height:1.6">Vous avez été ajouté(e) comme référent(e) de la crèche <strong>${creche||'Koala Kids'}</strong>.</p><ul style="color:#555;font-size:14px;line-height:2;padding-left:20px"><li>📋 Consulter et répondre aux consignes</li><li>📅 Renseigner votre planning</li><li>📩 Soumettre vos demandes</li></ul><div style="background:#f8f7ff;border-radius:8px;padding:12px 16px;margin-top:16px"><p style="margin:0;font-size:12px;color:#888">🔗 Votre lien personnel :</p><p style="margin:6px 0 0;font-size:12px;word-break:break-all"><a href="${refUrl}" style="color:#3D3580">${refUrl}</a></p></div>`,'Accéder à mon espace →',refUrl));
+}
+// Garde callFn pour getReplies
 async function callFn(fn,body){try{const r=await fetch(SUPABASE_URL+'/functions/v1/'+fn,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_ANON_KEY},body:JSON.stringify(body)});return r.ok;}catch{return false;}}
 // FIX: getReplies retourne [] silencieusement si échec (pas de log console rouge)
 async function getReplies(id){try{const r=await fetch(SUPABASE_URL+'/rest/v1/replies?consigne_id=eq.'+id+'&order=created_at.desc',{headers:{'Authorization':'Bearer '+SUPABASE_ANON_KEY,'apikey':SUPABASE_ANON_KEY}});if(!r.ok)return[];const j=await r.json();return Array.isArray(j)?j:[];}catch{return[];}}
@@ -786,7 +837,7 @@ async function saveDemand(){
   const referentEmail=document.getElementById('d-email').value.trim();
   const newD={id:Date.now().toString(),crecheId:targetCrecheId,referent:refName,referentEmail,subject:subj,desc:document.getElementById('d-desc').value.trim(),priority:document.getElementById('d-prio').value,theme:document.getElementById('d-theme').value,status:'attente',date:new Date().toLocaleDateString('fr-FR'),type:'demande'};
   demands.unshift(newD);
-  const ok=await callFn('notify-demand',{demand:{...newD,creche:creche?.name||''}});
+  const ok=await notifyDemand({...newD,creche:creche?.name||''});
   if(ok)showBanner('Demande enregistrée — e-mails envoyés !');else showBanner('Demande enregistrée (mode local).','error');
   save('demands_v2',demands);btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i> Enregistrer';
   closeModal('modal-demand-wrap');renderCrecheTabs();
@@ -802,7 +853,7 @@ async function saveConsigne(){
   const creche=creches.find(c=>c.id===targetCrecheId);
   const consigne={id:Date.now().toString(),crecheId:targetCrecheId||'',referent:ref?.name||'',referentEmail:ref?.email||'',subject:subj,message:msg,priority:document.getElementById('c-prio').value,date:new Date().toLocaleDateString('fr-FR'),type:'consigne',status:'envoyee'};
   const demands=getDemands();demands.unshift(consigne);save('demands_v2',demands);
-  const ok=await callFn('notify-consigne',{consigne:{...consigne,creche:creche?.name||''}});
+  const ok=await notifyConsigne({...consigne,creche:creche?.name||''});
   if(ok)showBanner('Consigne envoyée à '+ref?.name+' !');else showBanner('Consigne enregistrée (e-mail non disponible).','error');
   btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i> Envoyer';
   closeModal('modal-consigne-wrap');renderCrecheTabs();
@@ -816,7 +867,7 @@ async function toggleStatus(id){
   else delete d.treatedAt;
   save('demands_v2',demands);
   const creche=creches.find(c=>c.id===d.crecheId);
-  await callFn('notify-status',{demand:{...d,creche:creche?.name||''},newStatus:d.status});
+  await notifyStatus({...d,creche:creche?.name||''},d.status);
   showBanner('Demande '+(d.status==='traite'?'traitée ✅':'remise en attente ⏳')+' !');
   renderDemandsOnly();
   // Mettre à jour les compteurs dans les onglets
@@ -1092,7 +1143,7 @@ async function sendLink(refId){
   const refs=getReferents(),creches=getCreches(),r=refs.find(x=>x.id===refId);
   if(!r?.email){alert('Ce référent n\'a pas d\'adresse e-mail.');return;}
   const creche=creches.find(c=>c.id===r.crecheId);
-  const ok=await callFn('send-referent-link',{referent:{id:r.id,name:r.name,email:r.email,creche:creche?.name||''}});
+  const ok=await sendReferentLink({id:r.id,name:r.name,email:r.email,creche:creche?.name||''});
   if(ok)showBanner('Lien envoyé à '+r.name+' !');else showBanner('Erreur lors de l\'envoi.','error');
 }
 
