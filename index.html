@@ -605,7 +605,11 @@ function renderCrecheTabs(){
   renderCrechePanel().catch(e=>console.error('renderCrechePanel error:',e));
 }
 
-function selectCreche(id){activeCrecheId=id;activeFilter='all';searchTerm='';renderCrecheTabs();}
+function selectCreche(id){
+  activeCrecheId=id;activeFilter='all';searchTerm='';
+  const inp=document.getElementById('search-d');if(inp)inp.value='';
+  renderCrecheTabs();
+}
 
 async function renderCrechePanel(){
   const panel=document.getElementById('creche-panel');
@@ -639,7 +643,7 @@ async function renderCrechePanel(){
   html+='<div class="stats-row"><div class="stat-card"><div class="stat-label"><i class="ti ti-message-circle" style="font-size:11px"></i> Total</div><div class="stat-val cv">'+total+'</div></div><div class="stat-card" style="border-top-color:var(--orange)"><div class="stat-label"><i class="ti ti-clock" style="font-size:11px"></i> En attente</div><div class="stat-val co">'+attente+'</div></div><div class="stat-card" style="border-top-color:var(--red)"><div class="stat-label"><i class="ti ti-alert-circle" style="font-size:11px"></i> Urgentes</div><div class="stat-val cr">'+urgent+'</div></div><div class="stat-card" style="border-top-color:var(--green)"><div class="stat-label"><i class="ti ti-circle-check" style="font-size:11px"></i> Traitées</div><div class="stat-val cg">'+traite+'</div></div></div>';
 
   html+='<div class="section-header"><div class="section-left"><span class="section-title">Demandes & consignes</span>'
-    +'<div style="position:relative"><input class="search-inp" id="search-d" type="text" placeholder="Rechercher sur toutes les crèches…" value="'+searchTerm.replace(/"/g,'&quot;')+'" oninput="searchTerm=this.value;renderDemandsOnly()"><i class="ti ti-search" style="position:absolute;right:9px;top:50%;transform:translateY(-50%);color:#aaa;font-size:13px;pointer-events:none"></i></div>'
+    +'<div style="position:relative"><input class="search-inp" id="search-d" type="text" placeholder="🔍 Rechercher dans toutes les crèches…" value="'+searchTerm.replace(/"/g,'&quot;')+'" oninput="searchTerm=this.value;renderDemandsOnly()" autocomplete="off" style="width:260px"><i class="ti ti-x" style="position:absolute;right:9px;top:50%;transform:translateY(-50%);color:#bbb;font-size:13px;cursor:pointer;'+(searchTerm?'':'display:none')+'" onclick="searchTerm=\'\';document.getElementById(\'search-d\').value=\'\';renderDemandsOnly()" id="search-clear"></i></div>'
     +'</div><button class="btn-primary" onclick="openDemandModal()"><i class="ti ti-plus"></i> Nouvelle demande</button></div>';
 
   html+='<div class="filters"><button class="fchip'+(activeFilter==='all'?' active':'')+'" onclick="setFilter(\'all\',this)">En cours</button><button class="fchip'+(activeFilter==='urgent'?' active':'')+'" onclick="setFilter(\'urgent\',this)">Urgentes</button><button class="fchip'+(activeFilter==='attente'?' active':'')+'" onclick="setFilter(\'attente\',this)">En attente</button><button class="fchip'+(activeFilter==='traite'?' active':'')+'" onclick="setFilter(\'traite\',this)">Traitées</button><button class="fchip'+(activeFilter==='consigne'?' active':'')+'" onclick="setFilter(\'consigne\',this)">Consignes</button></div>';
@@ -652,44 +656,77 @@ async function renderCrechePanel(){
 // Render uniquement la liste des demandes — sans recréer toute la page
 async function renderDemandsOnly(){
   const creches=getCreches(),demands=getDemands();
-  const isAll=activeCrecheId==='all';
-  const creche=isAll?null:creches.find(c=>c.id===activeCrecheId);
-
-  // Si recherche active → toutes les crèches, sinon filtre par crèche sélectionnée
-  const base=searchTerm?demands:(isAll?demands:demands.filter(d=>d.crecheId===creche?.id));
-
-  let filtered=base.filter(d=>{
-    if(activeFilter==='all'&&d.status==='traite')return false;  // vue par défaut : masque les traitées
-    if(activeFilter==='urgent'&&d.priority!=='urgent')return false;
-    if(activeFilter==='attente'&&d.status!=='attente')return false;
-    if(activeFilter==='traite'&&d.status!=='traite')return false;
-    if(activeFilter==='consigne'&&d.type!=='consigne')return false;
-    if(searchTerm&&!d.subject.toLowerCase().includes(searchTerm)&&!(d.referent||'').toLowerCase().includes(searchTerm)&&!(creches.find(c=>c.id===d.crecheId)?.name||'').toLowerCase().includes(searchTerm))return false;
-    return true;
-  });
   const inner=document.getElementById('demands-list-inner');
   if(!inner)return;
+
+  // Recherche active → toutes crèches, sinon filtre par crèche sélectionnée
+  const isAll=activeCrecheId==='all';
+  const creche=isAll?null:creches.find(c=>c.id===activeCrecheId);
+  const term=searchTerm.toLowerCase().trim();
+
+  const base=term?demands:(isAll?demands:demands.filter(d=>d.crecheId===creche?.id));
+
+  let filtered=base.filter(d=>{
+    // Si recherche active : on ignore le filtre "masquer les traitées" et on cherche partout
+    if(!term){
+      if(activeFilter==='all'&&d.status==='traite')return false;
+      if(activeFilter==='urgent'&&d.priority!=='urgent')return false;
+      if(activeFilter==='attente'&&d.status!=='attente')return false;
+      if(activeFilter==='traite'&&d.status!=='traite')return false;
+      if(activeFilter==='consigne'&&d.type!=='consigne')return false;
+    }
+    if(term){
+      const cname=(creches.find(c=>c.id===d.crecheId)?.name||'').toLowerCase();
+      const match=(d.subject||'').toLowerCase().includes(term)
+        ||(d.referent||'').toLowerCase().includes(term)
+        ||(d.desc||d.message||'').toLowerCase().includes(term)
+        ||cname.includes(term)
+        ||(d.theme||'').toLowerCase().includes(term);
+      if(!match)return false;
+    }
+    return true;
+  });
+
   let html='';
   if(!filtered.length){
-    html='<div class="empty-state"><i class="ti ti-inbox"></i><p>Aucune demande trouvée.</p></div>';
+    html=term
+      ?'<div class="empty-state"><i class="ti ti-zoom-cancel"></i><p>Aucune demande ne correspond à "<strong>'+term+'</strong>".</p></div>'
+      :'<div class="empty-state"><i class="ti ti-inbox"></i><p>Aucune demande trouvée.</p></div>';
   } else {
+    // Afficher un bandeau si la recherche dépasse la crèche active
+    if(term&&!isAll){
+      const nbAutres=filtered.filter(d=>d.crecheId!==activeCrecheId).length;
+      if(nbAutres>0)html+='<div class="info-box" style="margin-bottom:10px"><i class="ti ti-search" style="font-size:15px"></i> Résultats sur toutes les crèches — <strong>'+filtered.length+' demande(s)</strong> trouvée(s)</div>';
+    } else if(term){
+      html+='<div class="info-box" style="margin-bottom:10px"><i class="ti ti-search" style="font-size:15px"></i> <strong>'+filtered.length+' demande(s)</strong> trouvée(s) sur toutes les crèches</div>';
+    }
     for(const d of filtered){
       const isC=d.type==='consigne';
-      const crecheLabel=isAll?(creches.find(c=>c.id===d.crecheId)?.name||''):'';
-      html+='<div class="dcard '+(isC?'consigne':d.priority)+'"><div class="dmeta"><div class="dtop"><span class="dsubject">'+d.subject+'</span>'
+      const crecheLabel=(creches.find(c=>c.id===d.crecheId)?.name||'');
+      // Surlignage du terme recherché dans le sujet
+      const hl=str=>{if(!term||!str)return str||'';const re=new RegExp('('+term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');return str.replace(re,'<mark style="background:#FFF3B0;border-radius:2px;padding:0 1px">$1</mark>');};
+      html+='<div class="dcard '+(isC?'consigne':d.priority)+'"><div class="dmeta"><div class="dtop"><span class="dsubject">'+hl(d.subject)+'</span>'
         +(isC?'<span class="badge b-consigne"><i class="ti ti-send" style="font-size:10px"></i> Consigne</span>':'<span class="badge b-'+d.priority+'">'+(d.priority==='urgent'?'🔴 Urgent':d.priority==='info'?'ℹ️ Info':'Normal')+'</span>')
         +(d.theme&&!isC?'<span class="badge b-ref">'+d.theme+'</span>':'')
-        +(isAll&&crecheLabel?'<span class="badge" style="background:#f0f0ff;color:var(--koala)"><i class="ti ti-building" style="font-size:10px"></i> '+crecheLabel+'</span>':'')
-        +'</div><div class="dbody">'+(d.desc||d.message||'—')+'</div>'
-        +'<div class="dfoot">'+(d.referent?'<span class="badge b-ref"><i class="ti ti-user" style="font-size:11px"></i> '+d.referent+'</span>':'')
+        +(crecheLabel?'<span class="badge" style="background:#f0f0ff;color:var(--koala)"><i class="ti ti-building" style="font-size:10px"></i> '+hl(crecheLabel)+'</span>':'')
+        +'</div><div class="dbody">'+hl(d.desc||d.message||'—')+'</div>'
+        +'<div class="dfoot">'+(d.referent?'<span class="badge b-ref"><i class="ti ti-user" style="font-size:11px"></i> '+hl(d.referent)+'</span>':'')
         +'<span class="meta-txt">'+d.date+'</span>'
-        +(isC?'':'<span class="badge b-'+(d.status||'attente')+'">'+(d.status==='traite'?'✅ Traitée':'⏳ En attente')+'</span>')
+        +(isC?'':'<span class="badge b-'+(d.status||'attente')+'">'+(d.status==='traite'?'✅ Traitée'+(d.treatedAt?' <span style="font-weight:400;opacity:0.85">le '+new Date(d.treatedAt).toLocaleDateString('fr-FR')+'</span>':''):'⏳ En attente')+'</span>')
         +'</div><div id="replies-'+d.id+'"></div></div>'
         +'<div class="dactions">'+(isC?'':'<button class="ibtn" title="Changer statut" onclick="toggleStatus(\''+d.id+'\')"><i class="ti ti-'+(d.status==='traite'?'rotate-clockwise':'check')+'"></i></button>')
         +'<button class="ibtn del" title="Supprimer" onclick="deleteDemand(\''+d.id+'\')"><i class="ti ti-trash"></i></button></div></div>';
     }
   }
   inner.innerHTML=html;
+  // Mettre à jour l'icône ✕ du champ de recherche
+  const clr=document.getElementById('search-clear');
+  if(clr)clr.style.display=term?'':'none';
+  // Remettre le focus sur le champ de recherche si une saisie était en cours
+  if(term){
+    const inp=document.getElementById('search-d');
+    if(inp&&document.activeElement!==inp){const len=inp.value.length;inp.focus();inp.setSelectionRange(len,len);}
+  }
   // Charger les réponses aux consignes
   for(const d of filtered){
     if(d.type==='consigne'){
@@ -773,7 +810,11 @@ async function saveConsigne(){
 
 async function toggleStatus(id){
   const demands=getDemands(),creches=getCreches(),d=demands.find(x=>x.id===id);
-  if(!d)return;d.status=d.status==='traite'?'attente':'traite';save('demands_v2',demands);
+  if(!d)return;
+  d.status=d.status==='traite'?'attente':'traite';
+  if(d.status==='traite') d.treatedAt=new Date().toISOString();
+  else delete d.treatedAt;
+  save('demands_v2',demands);
   const creche=creches.find(c=>c.id===d.crecheId);
   await callFn('notify-status',{demand:{...d,creche:creche?.name||''},newStatus:d.status});
   showBanner('Demande '+(d.status==='traite'?'traitée ✅':'remise en attente ⏳')+' !');
