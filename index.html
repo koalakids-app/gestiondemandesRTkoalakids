@@ -530,8 +530,12 @@ async function loadAllData(){
     dbSelect('creches'),dbSelect('demandes'),dbSelect('referents'),dbSelect('incidents'),dbSelect('enfants')
   ]);
 }
+// SUPABASE HELPERS
+async function dbSelect(table,filters={}){let q=sb.from(table).select('*').order('created_at',{ascending:false});for(const[k,v]of Object.entries(filters))q=q.eq(k,v);const{data,error}=await q;if(error){console.warn(table,error);return[];}return data||[];}
+async function dbInsert(table,row){const{data,error}=await sb.from(table).insert(row).select().single();if(error){console.warn('insert',table,error);return null;}return data;}
+async function dbUpdate(table,id,updates){const{error}=await sb.from(table).update(updates).eq('id',id);if(error){console.warn('update',table,error);return false;}return true;}
+async function dbDelete(table,id){const{error}=await sb.from(table).delete().eq('id',id);if(error){console.warn('delete',table,error);return false;}return true;}
 
-// AUTH — fonctions globales
 async function doLogin(){
   const email=document.getElementById('login-email').value.trim(),pwd=document.getElementById('login-pwd').value;
   const btn=document.getElementById('login-btn'),err=document.getElementById('login-err');
