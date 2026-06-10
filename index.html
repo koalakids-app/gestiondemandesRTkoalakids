@@ -216,24 +216,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .info-box{background:var(--koala-light);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--koala);display:flex;align-items:center;gap:8px;margin-bottom:1rem;font-weight:500}
 .info-box.warning{background:var(--orange-light);color:var(--orange-dark)}
 
-/* AI ASSISTANT */
-.ai-panel{background:linear-gradient(135deg,#f8f7ff,#fff8f5);border:1px solid #d8d5f5;border-radius:12px;padding:1rem 1.1rem;margin-bottom:1rem}
-.ai-panel-header{display:flex;align-items:center;gap:8px;margin-bottom:0.75rem}
-.ai-panel-title{font-size:14px;font-weight:700;background:linear-gradient(135deg,#3D3580,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.ai-input-row{display:flex;gap:8px}
-.ai-input{flex:1;padding:9px 12px;border:1.5px solid #c9c6f0;border-radius:8px;font-size:13px;background:#fff}
-.ai-input:focus{outline:none;border-color:var(--koala)}
-.ai-response{background:#fff;border:1px solid #c9c6f0;border-radius:8px;padding:10px 12px;font-size:13px;color:#333;margin-top:8px;line-height:1.6;max-height:200px;overflow-y:auto;display:none}
-.ai-response.visible{display:block}
-.ai-thinking{display:flex;align-items:center;gap:8px;font-size:12px;color:#764ba2;padding:8px}
-.ai-dot{width:6px;height:6px;border-radius:50%;background:#764ba2;animation:pulse 1.2s infinite}
-.ai-dot:nth-child(2){animation-delay:0.2s}
-.ai-dot:nth-child(3){animation-delay:0.4s}
-@keyframes pulse{0%,80%,100%{opacity:0.3}40%{opacity:1}}
-.ai-quick-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.ai-quick-btn{padding:4px 10px;border:1.5px solid #c9c6f0;border-radius:14px;background:transparent;cursor:pointer;font-size:11.5px;color:#764ba2;font-weight:500}
-.ai-quick-btn:hover{background:#f0efff;border-color:var(--koala)}
-
 /* TABS INSIDE MODULE */
 .module-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1rem}
 .module-tab{padding:8px 15px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:#777;background:transparent;border-top:none;border-left:none;border-right:none;font-weight:500}
@@ -604,12 +586,8 @@ async function renderCrechePanel(){
 
   html+='<div class="stats-row"><div class="stat-card"><div class="stat-label"><i class="ti ti-message-circle" style="font-size:11px"></i> Total</div><div class="stat-val cv">'+total+'</div></div><div class="stat-card" style="border-top-color:var(--orange)"><div class="stat-label"><i class="ti ti-clock" style="font-size:11px"></i> En attente</div><div class="stat-val co">'+attente+'</div></div><div class="stat-card" style="border-top-color:var(--red)"><div class="stat-label"><i class="ti ti-alert-circle" style="font-size:11px"></i> Urgentes</div><div class="stat-val cr">'+urgent+'</div></div><div class="stat-card" style="border-top-color:var(--green)"><div class="stat-label"><i class="ti ti-circle-check" style="font-size:11px"></i> Traitées</div><div class="stat-val cg">'+traite+'</div></div></div>';
 
-  // Panel IA
-  html+='<div class="ai-panel"><div class="ai-panel-header"><span style="font-size:18px">✨</span><span class="ai-panel-title">Assistant IA — Koala Kids</span></div><div class="ai-input-row"><input class="ai-input" id="ai-question" placeholder="Posez une question sur les demandes…" onkeydown="if(event.key===\'Enter\')askAI()"/><button class="btn-primary" onclick="askAI()" style="flex-shrink:0"><i class="ti ti-sparkles"></i> Demander</button></div><div class="ai-quick-btns"><button class="ai-quick-btn" onclick="quickAI(\'Résume les demandes urgentes en attente\')">📋 Résumé urgent</button><button class="ai-quick-btn" onclick="quickAI(\'Quelles actions dois-je prioriser aujourd\\\'hui ?\')">🎯 Priorités du jour</button><button class="ai-quick-btn" onclick="quickAI(\'Rédige une consigne de suivi pour les demandes en attente\')">✍️ Rédiger consigne</button><button class="ai-quick-btn" onclick="quickAI(\'Analyse les tendances des demandes\')">📊 Analyser tendances</button></div><div class="ai-response" id="ai-response-box"></div></div>';
-
-  // Barre de recherche + bouton "Nouvelle demande" — HORS zone re-render pour préserver la saisie
   html+='<div class="section-header"><div class="section-left"><span class="section-title">Demandes & consignes</span>'
-    +'<div style="position:relative"><input class="search-inp" id="search-d" type="text" placeholder="Rechercher…" value="'+searchTerm.replace(/"/g,'&quot;')+'" oninput="searchTerm=this.value;renderDemandsOnly()"><i class="ti ti-search" style="position:absolute;right:9px;top:50%;transform:translateY(-50%);color:#aaa;font-size:13px;pointer-events:none"></i></div>'
+    +'<div style="position:relative"><input class="search-inp" id="search-d" type="text" placeholder="Rechercher sur toutes les crèches…" value="'+searchTerm.replace(/"/g,'&quot;')+'" oninput="searchTerm=this.value;renderDemandsOnly()"><i class="ti ti-search" style="position:absolute;right:9px;top:50%;transform:translateY(-50%);color:#aaa;font-size:13px;pointer-events:none"></i></div>'
     +'</div><button class="btn-primary" onclick="openDemandModal()"><i class="ti ti-plus"></i> Nouvelle demande</button></div>';
 
   html+='<div class="filters"><button class="fchip'+(activeFilter==='all'?' active':'')+'" onclick="setFilter(\'all\',this)">Toutes</button><button class="fchip'+(activeFilter==='urgent'?' active':'')+'" onclick="setFilter(\'urgent\',this)">Urgentes</button><button class="fchip'+(activeFilter==='attente'?' active':'')+'" onclick="setFilter(\'attente\',this)">En attente</button><button class="fchip'+(activeFilter==='traite'?' active':'')+'" onclick="setFilter(\'traite\',this)">Traitées</button><button class="fchip'+(activeFilter==='consigne'?' active':'')+'" onclick="setFilter(\'consigne\',this)">Consignes</button></div>';
@@ -624,8 +602,11 @@ async function renderDemandsOnly(){
   const creches=getCreches(),demands=getDemands();
   const isAll=activeCrecheId==='all';
   const creche=isAll?null:creches.find(c=>c.id===activeCrecheId);
-  const all=isAll?demands:demands.filter(d=>d.crecheId===creche?.id);
-  let filtered=all.filter(d=>{
+
+  // Si recherche active → toutes les crèches, sinon filtre par crèche sélectionnée
+  const base=searchTerm?demands:(isAll?demands:demands.filter(d=>d.crecheId===creche?.id));
+
+  let filtered=base.filter(d=>{
     if(activeFilter==='urgent'&&d.priority!=='urgent')return false;
     if(activeFilter==='attente'&&d.status!=='attente')return false;
     if(activeFilter==='traite'&&d.status!=='traite')return false;
@@ -673,47 +654,6 @@ function setFilter(f,el){
   renderDemandsOnly();
 }
 function fillRefEmail(){const sel=document.getElementById('d-ref-select');const ref=getReferents().find(r=>r.name===sel.value);if(ref)document.getElementById('d-email').value=ref.email;}
-
-// ─── AI ASSISTANT ────────────────────────────────────────────────
-async function askAI(){
-  const q=document.getElementById('ai-question').value.trim();
-  if(!q)return;
-  _doAI(q);
-}
-async function quickAI(q){
-  document.getElementById('ai-question').value=q;
-  _doAI(q);
-}
-async function _doAI(question){
-  const box=document.getElementById('ai-response-box');
-  if(!box)return;
-  box.className='ai-response visible';
-  box.innerHTML='<div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span style="margin-left:4px">Analyse en cours…</span></div>';
-  
-  const creches=getCreches(),demands=getDemands(),incidents=getIncidents(),enfants=getEnfants();
-  const isAll=activeCrecheId==='all';
-  const creche=isAll?null:creches.find(c=>c.id===activeCrecheId);
-  const crecheDemands=isAll?demands:demands.filter(d=>d.crecheId===activeCrecheId);
-  const crecheIncidents=isAll?incidents:incidents.filter(i=>i.crecheId===activeCrecheId);
-  const scope=isAll?'l\'ensemble du réseau Koala Kids ('+creches.length+' crèches)':`la crèche "${creche?.name||'inconnue'}"`;
-  
-  const context=`Tu es un assistant expert en gestion de micro-crèches pour Koala Kids (réseau de crèches françaises).
-Voici les données actuelles pour ${scope} :
-- Nombre de demandes : ${crecheDemands.length} (dont ${crecheDemands.filter(d=>d.status==='attente').length} en attente, ${crecheDemands.filter(d=>d.priority==='urgent').length} urgentes)
-- Incidents : ${crecheIncidents.length} (dont ${crecheIncidents.filter(i=>!i.traite).length} non traités)
-- Enfants inscrits : ${isAll?enfants.length:enfants.filter(e=>e.crecheId===activeCrecheId).length}
-- Dernières demandes : ${crecheDemands.slice(0,5).map(d=>'['+d.priority.toUpperCase()+'] '+d.subject+' ('+d.status+')').join(' | ')||'aucune'}
-- Derniers incidents : ${crecheIncidents.slice(0,3).map(i=>'['+i.severity+'] '+i.type+' — '+i.child).join(' | ')||'aucun'}
-
-Réponds de façon concise, pratique, en français, avec des recommandations concrètes adaptées au terrain d'une micro-crèche.`;
-
-  try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:context,messages:[{role:'user',content:question}]})});
-    const data=await r.json();
-    const text=data.content?.find(b=>b.type==='text')?.text||'Désolé, impossible de répondre.';
-    box.innerHTML='<div style="line-height:1.7;white-space:pre-wrap">'+text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')+'</div>';
-  }catch(e){box.innerHTML='<div style="color:var(--red)">Erreur de connexion à l\'assistant IA.</div>';}
-}
 
 // ─── DEMANDES ACTIONS ────────────────────────────────────────────
 function populateSelects(){
