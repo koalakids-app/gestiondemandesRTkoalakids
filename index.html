@@ -578,12 +578,25 @@ async function notifyDemand(demand){
 }
 async function notifyConsigne(consigne){
   const {id,subject,message,referent,referentEmail,creche,priority}=consigne;
-  const replyUrl=`${APP_URL}referent.html?id=${id}&name=${encodeURIComponent(referent||'')}&creche=${encodeURIComponent(creche||'')}`;
+  const replyUrl=APP_URL+'referent.html?id='+id+'&name='+encodeURIComponent(referent||'')+'&creche='+encodeURIComponent(creche||'');
   const pc=priority==='urgent'?'#e03e3e':priority==='info'?'#F47920':'#3D3580';
-  const bloc=`<div style="background:#fff3e0;border-left:4px solid #F47920;border-radius:0 8px 8px 0;padding:16px;margin:16px 0"><div style="font-size:11px;color:#F47920;font-weight:700;margin-bottom:6px">📋 CONSIGNE — ${creche||''}</div><h2 style="margin:0 0 10px;color:#1a1a1a;font-size:16px">${subject}</h2><p style="margin:0 0 10px;color:#555;font-size:13px;line-height:1.5;white-space:pre-line">${message||'—'}</p><span style="background:${pc};color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700">${priority==='urgent'?'🔴 Urgente':priority==='info'?'ℹ️ Info':'Normale'}</span></div>`;
+  const pl=priority==='urgent'?'🔴 Urgente':priority==='info'?'ℹ️ Info':'Normale';
+  const bloc='<div style="background:#fff3e0;border-left:4px solid #F47920;border-radius:0 8px 8px 0;padding:16px;margin:16px 0">'
+    +'<div style="font-size:11px;color:#F47920;font-weight:700;margin-bottom:6px">📋 CONSIGNE — '+(creche||'')+'</div>'
+    +'<h2 style="margin:0 0 10px;color:#1a1a1a;font-size:16px">'+subject+'</h2>'
+    +'<p style="margin:0 0 10px;color:#555;font-size:13px;line-height:1.5;white-space:pre-line">'+(message||'—')+'</p>'
+    +'<span style="background:'+pc+';color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700">'+pl+'</span></div>';
   const res=[];
-  if(referentEmail)res.push(await sendEmail(referentEmail,`📋 Consigne : "${subject}" — Koala Kids`,emailTpl('Nouvelle consigne de la direction',`<p style="color:#555;margin-top:0">Bonjour <strong>${referent||'Référent'}</strong>,</p><p style="color:#555">Vous avez reçu une consigne de la direction.</p>${bloc}<p style="color:#555;font-size:13px">Cliquez ci-dessous pour répondre :</p>`,'📩 Répondre à cette consigne →',replyUrl)));
-  if(ADMIN_EMAIL)res.push(await sendEmail(ADMIN_EMAIL,`✅ Consigne envoyée à ${referent} — ${creche}`,emailTpl('Confirmation',`<p style="color:#555">Consigne <strong>"${subject}"</strong> envoyée à <strong>${referent}</strong> (${referentEmail||'—'}).</p>${bloc}`,'',''));
+  if(referentEmail)res.push(await sendEmail(referentEmail,'📋 Consigne : "'+subject+'" — Koala Kids',
+    emailTpl('Nouvelle consigne de la direction',
+      '<p style="color:#555;margin-top:0">Bonjour <strong>'+(referent||'Référent')+'</strong>,</p>'
+      +'<p style="color:#555">Vous avez reçu une consigne de la direction.</p>'+bloc
+      +'<p style="color:#555;font-size:13px">Cliquez ci-dessous pour répondre :</p>',
+      '📩 Répondre à cette consigne →',replyUrl)));
+  if(ADMIN_EMAIL)res.push(await sendEmail(ADMIN_EMAIL,'✅ Consigne envoyée à '+referent+' — '+creche,
+    emailTpl('Confirmation',
+      '<p style="color:#555">Consigne <strong>"'+subject+'"</strong> envoyée à <strong>'+referent+'</strong> ('+(referentEmail||'—')+').</p>'+bloc,
+      '','')));
   return res.some(Boolean);
 }
 async function notifyStatus(demand,newStatus){
