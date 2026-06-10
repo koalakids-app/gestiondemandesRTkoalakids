@@ -252,9 +252,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="login-title">Koala Kids</div>
       <div class="login-sub">Suite de gestion pédagogique</div>
       <div class="login-err" id="login-err"></div>
-      <div class="fg"><label class="flabel">Email</label><input class="finput" id="login-email" type="email" placeholder="votre@email.fr" autocomplete="email"/></div>
-      <div class="fg"><label class="flabel">Mot de passe</label><input class="finput" id="login-pwd" type="password" placeholder="••••••••" autocomplete="current-password"/></div>
-      <button class="login-btn" id="login-btn" onclick="doLogin()"><i class="ti ti-login"></i> Se connecter</button>
+      <div id="login-form">
+        <div class="fg"><label class="flabel">Email</label><input class="finput" id="login-email" type="email" placeholder="votre@email.fr" autocomplete="email"/></div>
+        <div class="fg"><label class="flabel">Mot de passe</label><input class="finput" id="login-pwd" type="password" placeholder="••••••••" autocomplete="current-password"/></div>
+        <button class="login-btn" id="login-btn" onclick="doLogin()"><i class="ti ti-login"></i> Se connecter</button>
+      </div>
+      <div id="reset-form" style="display:none">
+        <p style="color:#555;font-size:14px;margin-bottom:1rem">Choisissez votre nouveau mot de passe :</p>
+        <div class="fg"><label class="flabel">Nouveau mot de passe</label><input class="finput" id="new-pwd" type="password" placeholder="Min. 6 caractères"/></div>
+        <div class="fg"><label class="flabel">Confirmer</label><input class="finput" id="new-pwd-confirm" type="password" placeholder="Répétez le mot de passe"/></div>
+        <button class="login-btn" onclick="saveNewPassword()"><i class="ti ti-check"></i> Enregistrer le mot de passe</button>
+      </div>
     </div>
   </div>
 </div>
@@ -369,6 +377,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="section-header">
       <span class="section-title"><i class="ti ti-chart-bar" style="color:var(--koala)"></i> Tableau de bord direction</span>
       <span class="section-sub" id="dash-date"></span>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap">
+      <button class="btn-green" onclick="exportBackup()"><i class="ti ti-download"></i> Exporter sauvegarde</button>
+      <label class="btn-sm" style="cursor:pointer;display:flex;align-items:center;gap:5px"><i class="ti ti-upload"></i> Restaurer <input type="file" accept=".json" onchange="importBackup(event)" style="display:none"/></label>
     </div>
     <div id="dash-alerts"></div>
     <div class="stats-row" id="dash-stats"></div>
@@ -499,30 +511,22 @@ window.addEventListener('DOMContentLoaded', function() {
   initAuth();
 });
 
-async function initAuth(){
-
 // SUPABASE HELPERS
 async function dbSelect(table,filters={}){let q=sb.from(table).select('*').order('created_at',{ascending:false});for(const[k,v]of Object.entries(filters))q=q.eq(k,v);const{data,error}=await q;if(error){console.warn(table,error);return[];}return data||[];}
 async function dbInsert(table,row){const{data,error}=await sb.from(table).insert(row).select().single();if(error){console.warn('insert',table,error);return null;}return data;}
 async function dbUpdate(table,id,updates){const{error}=await sb.from(table).update(updates).eq('id',id);if(error){console.warn('update',table,error);return false;}return true;}
 async function dbDelete(table,id){const{error}=await sb.from(table).delete().eq('id',id);if(error){console.warn('delete',table,error);return false;}return true;}
 
-// AUTH
-async function doLogin(){
-  const email=document.getElementById('login-email').value.trim(),pwd=document.getElementById('login-pwd').value;
-  const btn=document.getElementById('login-btn'),err=document.getElementById('login-err');
-  err.style.display='none';
-  if(!email||!pwd){err.textContent='Email et mot de passe requis.';err.style.display='block';return;}
-  btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i> Connexion…';
-  const{error}=await sb.auth.signInWithPassword({email,password:pwd});
-  if(error){err.textContent='Email ou mot de passe incorrect.';err.style.display='block';btn.disabled=false;btn.innerHTML='<i class="ti ti-login"></i> Se connecter';}
-}
-async function doLogout(){if(!confirm('Se déconnecter ?'))return;await sb.auth.signOut();}
-
 sb.auth.onAuthStateChange(async(event,session)=>{
+  // Cas : le référent revient après avoir cliqué sur le lien reset password
+  if(event==='PASSWORD_RECOVERY'){
+    showPasswordResetForm();
+    return;
+  }
   if(session?.user){
     currentUser=session.user;
-    const{data}=await sb.from('referents').select('*').eq('user_id',currentUser.id).single();
+    const{data,error}=await sb.from('referents').select('*').eq('user_id',currentUser.id).maybeSingle();
+    if(error){console.warn('Profile error:',error);}
     currentProfile=data;
     isDirection=currentProfile?.role==='direction';
     await loadAllData();
@@ -539,9 +543,46 @@ async function loadAllData(){
   ]);
 }
 
-} // fin initAuth
+// AUTH — fonctions globales
+async function doLogin(){
+  const email=document.getElementById('login-email').value.trim(),pwd=document.getElementById('login-pwd').value;
+  const btn=document.getElementById('login-btn'),err=document.getElementById('login-err');
+  err.style.display='none';
+  if(!email||!pwd){err.textContent='Email et mot de passe requis.';err.style.display='block';return;}
+  btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i> Connexion…';
+  const{error}=await sb.auth.signInWithPassword({email,password:pwd});
+  if(error){err.textContent='Email ou mot de passe incorrect.';err.style.display='block';btn.disabled=false;btn.innerHTML='<i class="ti ti-login"></i> Se connecter';}
+}
+async function doLogout(){if(!confirm('Se déconnecter ?'))return;await sb.auth.signOut();}
 
-function showLogin(){document.getElementById('loading-screen').style.display='none';document.getElementById('login-wrap').style.display='block';document.getElementById('app-wrap').style.display='none';}
+function showLogin(){
+  document.getElementById('loading-screen').style.display='none';
+  document.getElementById('login-wrap').style.display='block';
+  document.getElementById('app-wrap').style.display='none';
+  document.getElementById('login-form').style.display='block';
+  document.getElementById('reset-form').style.display='none';
+}
+
+function showPasswordResetForm(){
+  document.getElementById('loading-screen').style.display='none';
+  document.getElementById('login-wrap').style.display='block';
+  document.getElementById('app-wrap').style.display='none';
+  document.getElementById('login-form').style.display='none';
+  document.getElementById('reset-form').style.display='block';
+  document.getElementById('login-sub').textContent='Réinitialisation du mot de passe';
+}
+
+async function saveNewPassword(){
+  const pwd=document.getElementById('new-pwd').value;
+  const confirm=document.getElementById('new-pwd-confirm').value;
+  const err=document.getElementById('login-err');
+  err.style.display='none';
+  if(pwd.length<6){err.textContent='Le mot de passe doit faire au moins 6 caractères.';err.style.display='block';return;}
+  if(pwd!==confirm){err.textContent='Les mots de passe ne correspondent pas.';err.style.display='block';return;}
+  const{error}=await sb.auth.updateUser({password:pwd});
+  if(error){err.textContent='Erreur : '+error.message;err.style.display='block';}
+  else{showBanner('Mot de passe mis à jour ✅ — vous pouvez vous connecter.');document.getElementById('login-form').style.display='block';document.getElementById('reset-form').style.display='none';document.getElementById('login-sub').textContent='Suite de gestion pédagogique';}
+}
 function showApp(){
   document.getElementById('loading-screen').style.display='none';
   document.getElementById('login-wrap').style.display='none';
@@ -702,7 +743,7 @@ async function renderReferents(){
   const grid=document.getElementById('ref-grid');if(!grid)return;
   const refs=cacheReferents.filter(r=>r.role==='referent');
   if(!refs.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1"><i class="ti ti-users"></i><p>Aucun référent.</p></div>';return;}
-  grid.innerHTML=refs.map(r=>{const creche=cacheCreches.find(c=>c.id===r.creche_id);const initials=r.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);return'<div class="ref-card"><div class="ref-card-top"><div class="ref-avatar">'+initials+'</div><div style="flex:1;min-width:0"><div class="ref-name">'+r.name+'</div><div class="ref-detail"><i class="ti ti-briefcase" style="font-size:11px"></i> '+(r.poste||'Référent')+'</div><div class="ref-detail"><i class="ti ti-building" style="font-size:11px"></i> '+(creche?.name||'—')+'</div><div class="ref-detail"><i class="ti ti-mail" style="font-size:11px"></i> '+(r.email||'—')+'</div></div></div><div class="ref-actions"><button class="btn-primary" style="font-size:12px" onclick="sendLink(\''+r.id+'\')"><i class="ti ti-link" style="font-size:12px"></i> Envoyer le lien</button><button class="ibtn" onclick="editRef(\''+r.id+'\')"><i class="ti ti-edit"></i></button><button class="ibtn del" onclick="deleteRef(\''+r.id+'\')"><i class="ti ti-trash"></i></button></div></div>';}).join('');
+  grid.innerHTML=refs.map(r=>{const creche=cacheCreches.find(c=>c.id===r.creche_id);const initials=r.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);return'<div class="ref-card"><div class="ref-card-top"><div class="ref-avatar">'+initials+'</div><div style="flex:1;min-width:0"><div class="ref-name">'+r.name+'</div><div class="ref-detail"><i class="ti ti-briefcase" style="font-size:11px"></i> '+(r.poste||'Référent')+'</div><div class="ref-detail"><i class="ti ti-building" style="font-size:11px"></i> '+(creche?.name||'—')+'</div><div class="ref-detail"><i class="ti ti-mail" style="font-size:11px"></i> '+(r.email||'—')+'</div></div></div><div class="ref-actions"><button class="btn-primary" style="font-size:12px" onclick="sendLink(\''+r.id+'\')"><i class="ti ti-link" style="font-size:12px"></i> Envoyer le lien</button><button class="btn-sm" style="font-size:12px" title="Envoyer un email de réinitialisation du mot de passe" onclick="resetPassword(\''+r.id+'\')"><i class="ti ti-key" style="font-size:12px"></i> Réinitialiser MDP</button><button class="ibtn" onclick="editRef(\''+r.id+'\')"><i class="ti ti-edit"></i></button><button class="ibtn del" onclick="deleteRef(\''+r.id+'\')"><i class="ti ti-trash"></i></button></div></div>';}).join('');
 }
 function openRefModal(){editingRefId=null;['r-name','r-email','r-poste','r-pwd'].forEach(id=>document.getElementById(id).value='');document.getElementById('r-creche').innerHTML='<option value="">-- Choisir --</option>'+cacheCreches.map(c=>'<option value="'+c.id+'">'+c.name+'</option>').join('');document.getElementById('modal-ref-title').textContent='Ajouter un référent';document.getElementById('modal-ref-wrap').classList.add('open');}
 function editRef(id){const r=cacheReferents.find(x=>x.id===id);if(!r)return;editingRefId=id;document.getElementById('r-name').value=r.name;document.getElementById('r-email').value=r.email||'';document.getElementById('r-poste').value=r.poste||'';document.getElementById('r-pwd').value='';document.getElementById('r-creche').innerHTML='<option value="">-- Choisir --</option>'+cacheCreches.map(c=>'<option value="'+c.id+'"'+(c.id===r.creche_id?' selected':'')+'>'+c.name+'</option>').join('');document.getElementById('modal-ref-title').textContent='Modifier le référent';document.getElementById('modal-ref-wrap').classList.add('open');}
@@ -717,6 +758,17 @@ async function saveRef(){
 }
 async function deleteRef(id){if(!confirm('Supprimer ce référent ?'))return;await dbDelete('referents',id);cacheReferents=cacheReferents.filter(r=>r.id!==id);renderReferents();}
 async function sendLink(refId){const r=cacheReferents.find(x=>x.id===refId);if(!r?.email){alert('Pas d\'email.');return;}const creche=cacheCreches.find(c=>c.id===r.creche_id);const ok=await callFn('send-referent-link',{referent:{id:r.id,name:r.name,email:r.email,creche:creche?.name||''}});if(ok)showBanner('Lien envoyé à '+r.name+' !');else showBanner('Erreur envoi.','error');}
+
+async function resetPassword(refId){
+  const r=cacheReferents.find(x=>x.id===refId);
+  if(!r?.email){alert('Ce référent n\'a pas d\'adresse e-mail.');return;}
+  if(!confirm('Envoyer un email de réinitialisation du mot de passe à '+r.name+' ('+r.email+') ?'))return;
+  const{error}=await sb.auth.resetPasswordForEmail(r.email,{
+    redirectTo: window.location.origin+window.location.pathname
+  });
+  if(error){showBanner('Erreur : '+error.message,'error');}
+  else{showBanner('Email de réinitialisation envoyé à '+r.name+' ✅ — il recevra un lien pour choisir son nouveau mot de passe.');}
+}
 
 // INCIDENTS
 function setIncFilter(f,btn){activeIncFilter=f;document.querySelectorAll('#incident-filters .fchip').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderIncidents();}
@@ -821,6 +873,52 @@ function renderDashboard(){
 }
 
 // EDGE FUNCTIONS
+async function exportBackup(){
+  try{
+    showBanner('Préparation de la sauvegarde…');
+    const[creches,demandes,referents,incidents,enfants]=await Promise.all([
+      dbSelect('creches'),dbSelect('demandes'),dbSelect('referents'),dbSelect('incidents'),dbSelect('enfants')
+    ]);
+    const backup={version:'2.0',date:new Date().toISOString(),creches,demandes,referents,incidents,enfants};
+    const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='koalakids_backup_'+new Date().toISOString().slice(0,10)+'.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showBanner('Sauvegarde téléchargée ✅');
+  }catch(e){showBanner('Erreur lors de l\'export.','error');}
+}
+
+async function importBackup(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  if(!confirm('⚠️ La restauration va écraser toutes les données actuelles. Continuer ?'))return;
+  try{
+    const text=await file.text();
+    const backup=JSON.parse(text);
+    if(!backup.version||!backup.creches){showBanner('Fichier de sauvegarde invalide.','error');return;}
+    showBanner('Restauration en cours…');
+    // Vider et réinsérer chaque table
+    for(const table of ['presences','replies','demandes','incidents','enfants','referents','creches']){
+      await sb.from(table).delete().neq('id','00000000-0000-0000-0000-000000000000');
+    }
+    if(backup.creches?.length)await sb.from('creches').insert(backup.creches);
+    if(backup.referents?.length){
+      const refs=backup.referents.filter(r=>r.role!=='direction');
+      if(refs.length)await sb.from('referents').insert(refs);
+    }
+    if(backup.demandes?.length)await sb.from('demandes').insert(backup.demandes);
+    if(backup.incidents?.length)await sb.from('incidents').insert(backup.incidents);
+    if(backup.enfants?.length)await sb.from('enfants').insert(backup.enfants);
+    await loadAllData();
+    renderDashboard();
+    showBanner('Restauration réussie ✅ — '+backup.creches?.length+' crèches, '+backup.demandes?.length+' demandes importées.');
+  }catch(e){showBanner('Erreur lors de la restauration : '+e.message,'error');}
+  event.target.value='';
+}
+
 async function callFn(fn,body){try{const r=await fetch(SUPABASE_URL+'/functions/v1/'+fn,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_ANON_KEY},body:JSON.stringify(body)});return r.ok;}catch{return false;}}
 </script>
 </body>
