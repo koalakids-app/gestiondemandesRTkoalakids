@@ -590,7 +590,7 @@ async function renderCrechePanel(){
     +'<div style="position:relative"><input class="search-inp" id="search-d" type="text" placeholder="Rechercher sur toutes les crèches…" value="'+searchTerm.replace(/"/g,'&quot;')+'" oninput="searchTerm=this.value;renderDemandsOnly()"><i class="ti ti-search" style="position:absolute;right:9px;top:50%;transform:translateY(-50%);color:#aaa;font-size:13px;pointer-events:none"></i></div>'
     +'</div><button class="btn-primary" onclick="openDemandModal()"><i class="ti ti-plus"></i> Nouvelle demande</button></div>';
 
-  html+='<div class="filters"><button class="fchip'+(activeFilter==='all'?' active':'')+'" onclick="setFilter(\'all\',this)">Toutes</button><button class="fchip'+(activeFilter==='urgent'?' active':'')+'" onclick="setFilter(\'urgent\',this)">Urgentes</button><button class="fchip'+(activeFilter==='attente'?' active':'')+'" onclick="setFilter(\'attente\',this)">En attente</button><button class="fchip'+(activeFilter==='traite'?' active':'')+'" onclick="setFilter(\'traite\',this)">Traitées</button><button class="fchip'+(activeFilter==='consigne'?' active':'')+'" onclick="setFilter(\'consigne\',this)">Consignes</button></div>';
+  html+='<div class="filters"><button class="fchip'+(activeFilter==='all'?' active':'')+'" onclick="setFilter(\'all\',this)">En cours</button><button class="fchip'+(activeFilter==='urgent'?' active':'')+'" onclick="setFilter(\'urgent\',this)">Urgentes</button><button class="fchip'+(activeFilter==='attente'?' active':'')+'" onclick="setFilter(\'attente\',this)">En attente</button><button class="fchip'+(activeFilter==='traite'?' active':'')+'" onclick="setFilter(\'traite\',this)">Traitées</button><button class="fchip'+(activeFilter==='consigne'?' active':'')+'" onclick="setFilter(\'consigne\',this)">Consignes</button></div>';
   html+='<div id="demands-list-inner"></div>';
   panel.innerHTML=html;
   // Maintenant on injecte uniquement les cartes dans la zone dédiée
@@ -607,6 +607,7 @@ async function renderDemandsOnly(){
   const base=searchTerm?demands:(isAll?demands:demands.filter(d=>d.crecheId===creche?.id));
 
   let filtered=base.filter(d=>{
+    if(activeFilter==='all'&&d.status==='traite')return false;  // vue par défaut : masque les traitées
     if(activeFilter==='urgent'&&d.priority!=='urgent')return false;
     if(activeFilter==='attente'&&d.status!=='attente')return false;
     if(activeFilter==='traite'&&d.status!=='traite')return false;
