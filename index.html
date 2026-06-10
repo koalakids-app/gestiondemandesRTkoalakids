@@ -3,25 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Koala Kids — Gestion des demandes</title>
+<title>Koala Kids — Suite de gestion</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
-:root{--koala:#3D3580;--orange:#F47920;--koala-light:#EEEDF8;--orange-light:#FEF0E6;--koala-dark:#2A2460;--orange-dark:#C95F0A}
+:root{
+  --koala:#3D3580;--orange:#F47920;--koala-light:#EEEDF8;--orange-light:#FEF0E6;
+  --koala-dark:#2A2460;--orange-dark:#C95F0A;--green:#2a9d4e;--green-light:#e8f5e9;
+  --red:#e03e3e;--red-light:#fde8e8;--blue:#378ADD;--blue-light:#e8f2fd;
+  --border:#e0dff0;--bg:#F4F4F6;--card:#fff;--text:#1a1a1a;--muted:#888
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F4F4F6;color:#1a1a1a;min-height:100vh}
-.app{max-width:960px;margin:0 auto;padding:1rem}
-.header{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 1.25rem;background:#fff;border:1px solid #e0dff0;border-radius:14px;margin-bottom:1rem;flex-wrap:wrap;gap:8px;border-top:4px solid var(--koala)}
-.logo img{height:44px;width:auto;mix-blend-mode:multiply}
-.main-nav{display:flex;gap:6px;flex-wrap:wrap}
-.mnav-btn{padding:7px 15px;border:1.5px solid #dddcf0;border-radius:8px;background:transparent;cursor:pointer;font-size:13px;color:#555;display:flex;align-items:center;gap:6px;font-weight:500;transition:all 0.15s}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.app{max-width:1040px;margin:0 auto;padding:1rem}
+
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;padding:0.55rem 1.25rem;background:#fff;border:1px solid var(--border);border-radius:14px;margin-bottom:1rem;flex-wrap:wrap;gap:8px;border-top:4px solid var(--koala);box-shadow:0 1px 4px rgba(61,53,128,0.06)}
+.logo img{height:42px;width:auto;mix-blend-mode:multiply}
+.main-nav{display:flex;gap:5px;flex-wrap:wrap}
+.mnav-btn{padding:7px 13px;border:1.5px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;font-size:12.5px;color:#555;display:flex;align-items:center;gap:5px;font-weight:500;transition:all 0.15s}
 .mnav-btn.active{background:var(--koala);border-color:var(--koala);color:#fff}
 .mnav-btn:hover:not(.active){background:var(--koala-light);border-color:var(--koala);color:var(--koala)}
+.mnav-badge{background:var(--orange);color:#fff;font-size:9px;padding:1px 5px;border-radius:8px;font-weight:700;min-width:14px;text-align:center}
+.mnav-btn.active .mnav-badge{background:#fff;color:var(--koala)}
+
+/* TAB CONTENT */
 .tab-content{display:none}
 .tab-content.active{display:block}
+
+/* NOTIFICATIONS */
 .notif-banner{padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:1rem;display:none;align-items:center;gap:8px}
 .notif-banner.success{background:#edfaf3;color:#1a6b3c;border:1px solid #5cb87a;display:flex}
 .notif-banner.error{background:var(--orange-light);color:var(--orange-dark);border:1px solid var(--orange);display:flex}
-.creche-tabs-bar{display:flex;align-items:center;border-bottom:2px solid #e0dff0;margin-bottom:1rem;overflow-x:auto}
+
+/* CRECHE TABS */
+.creche-tabs-bar{display:flex;align-items:center;border-bottom:2px solid var(--border);margin-bottom:1rem;overflow-x:auto}
 .creche-tab{padding:9px 16px;font-size:13px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;color:#777;white-space:nowrap;background:transparent;border-top:none;border-left:none;border-right:none;display:flex;align-items:center;gap:6px;font-weight:500;transition:all 0.15s}
 .creche-tab.active{color:var(--koala);border-bottom-color:var(--orange);font-weight:700}
 .creche-tab:hover:not(.active){color:var(--koala);background:var(--koala-light)}
@@ -29,30 +44,55 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .creche-tab.active .tab-count{background:var(--orange);color:#fff}
 .add-creche-btn{padding:7px 14px;border:1.5px dashed #ccc;border-radius:8px;background:transparent;cursor:pointer;font-size:13px;color:#888;display:flex;align-items:center;gap:5px;white-space:nowrap;margin-left:8px;flex-shrink:0}
 .add-creche-btn:hover{background:var(--koala-light);color:var(--koala);border-color:var(--koala)}
+
+/* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:1rem}
-.stat-card{background:#fff;border-radius:10px;padding:0.75rem 1rem;border:1px solid #e0dff0;border-top:3px solid var(--koala)}
-.stat-label{font-size:12px;color:#888;margin-bottom:4px;font-weight:500}
-.stat-val{font-size:24px;font-weight:700}
-.cv{color:var(--koala)}.co{color:var(--orange)}.cr{color:#e03e3e}.cg{color:#2a9d4e}
+.stat-card{background:#fff;border-radius:12px;padding:0.8rem 1rem;border:1px solid var(--border);border-top:3px solid var(--koala);transition:box-shadow 0.15s}
+.stat-card:hover{box-shadow:0 3px 12px rgba(61,53,128,0.1)}
+.stat-label{font-size:11.5px;color:var(--muted);margin-bottom:4px;font-weight:500;display:flex;align-items:center;gap:4px}
+.stat-val{font-size:26px;font-weight:800;line-height:1}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.cv{color:var(--koala)}.co{color:var(--orange)}.cr{color:var(--red)}.cg{color:var(--green)}.cb{color:var(--blue)}
+
+/* SECTION HEADER */
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:8px}
 .section-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .section-title{font-size:15px;font-weight:700;color:var(--koala)}
-.btn-primary{padding:8px 16px;background:var(--koala);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;font-weight:600}
+.section-sub{font-size:12px;color:var(--muted);font-weight:400}
+
+/* BUTTONS */
+.btn-primary{padding:8px 16px;background:var(--koala);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;font-weight:600;transition:all 0.15s}
 .btn-primary:hover{background:var(--koala-dark)}
-.btn-primary:disabled{opacity:0.6;cursor:not-allowed}
+.btn-primary:disabled{opacity:0.55;cursor:not-allowed}
 .btn-orange{padding:8px 16px;background:var(--orange);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;font-weight:600}
 .btn-orange:hover{background:var(--orange-dark)}
-.btn-purple{padding:7px 12px;background:var(--koala);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:5px;font-weight:600}
-.btn-purple:hover{background:var(--koala-dark)}
-.search-inp{padding:7px 12px;border:1.5px solid #dddcf0;border-radius:8px;background:#fff;color:#1a1a1a;font-size:13px;width:190px}
+.btn-green{padding:7px 13px;background:var(--green);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12.5px;display:flex;align-items:center;gap:5px;font-weight:600}
+.btn-green:hover{background:#1e7a3a}
+.btn-sm{padding:5px 11px;border:1.5px solid var(--border);border-radius:7px;background:transparent;cursor:pointer;font-size:12px;color:#555;display:flex;align-items:center;gap:4px;font-weight:500}
+.btn-sm:hover{background:var(--koala-light);color:var(--koala);border-color:var(--koala)}
+.btn-danger-sm{padding:5px 12px;border:1.5px solid rgba(255,255,255,0.4);border-radius:8px;background:transparent;cursor:pointer;font-size:12px;color:#fff;display:flex;align-items:center;gap:5px;font-weight:500}
+.btn-danger-sm:hover{background:rgba(255,255,255,0.15)}
+.ibtn{width:32px;height:32px;border:1.5px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#888;font-size:15px;flex-shrink:0}
+.ibtn:hover{background:var(--koala-light);color:var(--koala);border-color:var(--koala)}
+.ibtn.del:hover{background:var(--red-light);color:var(--red);border-color:var(--red)}
+
+/* INPUTS */
+.search-inp{padding:7px 12px;border:1.5px solid var(--border);border-radius:8px;background:#fff;color:var(--text);font-size:13px;width:200px}
 .search-inp:focus{outline:none;border-color:var(--koala)}
+.finput{width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:8px;background:#fff;color:var(--text);font-size:13px;transition:border-color 0.15s}
+.finput:focus{outline:none;border-color:var(--koala)}
+
+/* FILTERS */
 .filters{display:flex;gap:6px;margin-bottom:0.75rem;flex-wrap:wrap}
-.fchip{padding:5px 12px;border:1.5px solid #e0dff0;border-radius:20px;background:transparent;cursor:pointer;font-size:12px;color:#666;font-weight:500}
+.fchip{padding:5px 12px;border:1.5px solid var(--border);border-radius:20px;background:transparent;cursor:pointer;font-size:12px;color:#666;font-weight:500}
 .fchip.active{background:var(--koala);border-color:var(--koala);color:#fff}
 .fchip:hover:not(.active){background:var(--koala-light);border-color:var(--koala);color:var(--koala)}
+
+/* DEMAND CARDS */
 .demands-list{display:flex;flex-direction:column;gap:8px}
-.dcard{background:#fff;border:1px solid #e0dff0;border-radius:12px;padding:0.875rem 1.1rem;display:flex;align-items:flex-start;gap:12px}
-.dcard.urgent{border-left:4px solid #e03e3e;border-radius:0 12px 12px 0}
+.dcard{background:#fff;border:1px solid var(--border);border-radius:12px;padding:0.875rem 1.1rem;display:flex;align-items:flex-start;gap:12px;transition:box-shadow 0.15s}
+.dcard:hover{box-shadow:0 2px 10px rgba(61,53,128,0.08)}
+.dcard.urgent{border-left:4px solid var(--red);border-radius:0 12px 12px 0}
 .dcard.normal{border-left:4px solid var(--koala);border-radius:0 12px 12px 0}
 .dcard.info{border-left:4px solid var(--orange);border-radius:0 12px 12px 0}
 .dcard.consigne{border-left:4px solid var(--orange);border-radius:0 12px 12px 0}
@@ -62,35 +102,39 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .dbody{font-size:13px;color:#555;line-height:1.5;margin-bottom:6px}
 .dfoot{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .badge{padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700}
-.b-urgent{background:#fde8e8;color:#c0392b}
+.b-urgent{background:var(--red-light);color:#c0392b}
 .b-normal{background:var(--koala-light);color:var(--koala)}
 .b-info{background:var(--orange-light);color:var(--orange-dark)}
 .b-consigne{background:var(--orange-light);color:var(--orange-dark)}
 .b-attente{background:#fff3e0;color:#b35a00}
-.b-traite{background:#e8f5e9;color:#2e7d32}
+.b-traite{background:var(--green-light);color:#2e7d32}
 .b-ref{background:#f0f0f0;color:#555}
+.b-ai{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
 .meta-txt{font-size:12px;color:#999}
 .reply-box{background:var(--koala-light);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:13px;color:var(--koala);border-left:3px solid var(--koala)}
 .reply-box strong{display:block;margin-bottom:4px;font-size:12px}
 .dactions{display:flex;gap:5px;flex-shrink:0}
-.ibtn{width:32px;height:32px;border:1.5px solid #e0dff0;border-radius:8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#888;font-size:15px}
-.ibtn:hover{background:var(--koala-light);color:var(--koala);border-color:var(--koala)}
-.ibtn.del:hover{background:#fde8e8;color:#c0392b;border-color:#e03e3e}
+.ai-suggestion{background:linear-gradient(135deg,#f0efff,#fff3f0);border:1px solid #c9c6f0;border-radius:8px;padding:10px 12px;margin-top:8px;font-size:12.5px;color:#3D3580;position:relative}
+.ai-suggestion-label{font-size:10px;font-weight:700;color:#764ba2;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;display:flex;align-items:center;gap:4px}
+
+/* EMPTY STATE */
 .empty-state{text-align:center;padding:3rem;color:#aaa}
 .empty-state i{font-size:40px;margin-bottom:1rem;display:block;opacity:0.3}
+
+/* CRECHE HEADER */
 .creche-header-box{background:var(--koala);border-radius:12px;padding:0.875rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .creche-header-name{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;color:#fff}
 .creche-header-name span{font-size:12px;color:rgba(255,255,255,0.7);font-weight:400}
 .section-actions{display:flex;gap:8px;flex-wrap:wrap}
-.btn-danger-sm{padding:5px 12px;border:1.5px solid rgba(255,255,255,0.4);border-radius:8px;background:transparent;cursor:pointer;font-size:12px;color:#fff;display:flex;align-items:center;gap:5px;font-weight:500}
-.btn-danger-sm:hover{background:rgba(255,255,255,0.15)}
+
+/* REFERENTS */
 .ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
-.ref-card{background:#fff;border:1px solid #e0dff0;border-radius:12px;padding:1rem 1.1rem;border-top:3px solid var(--orange)}
+.ref-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;border-top:3px solid var(--orange)}
 .ref-card-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.ref-avatar{width:42px;height:42px;border-radius:50%;background:var(--koala);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;flex-shrink:0}
+.ref-avatar{width:44px;height:44px;border-radius:50%;background:var(--koala);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;flex-shrink:0}
 .ref-name{font-size:14px;font-weight:700;color:var(--koala)}
-.ref-detail{font-size:12px;color:#888;margin-top:2px}
-.ref-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid #e0dff0}
+.ref-detail{font-size:12px;color:#888;margin-top:2px;display:flex;align-items:center;gap:4px}
+.ref-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
 .planning-mini{margin-top:8px}
 .planning-mini-title{font-size:11px;color:#888;margin-bottom:6px;font-weight:600;display:flex;align-items:center;gap:4px}
 .planning-mini-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
@@ -100,25 +144,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pm-slot.absent{background:var(--orange)}
 .pm-slot.formation{background:#378ADD}
 .pm-slot.reunion{background:#7B68EE}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center;padding:1rem}
-.overlay.open{display:flex}
-.modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:520px;border:1px solid #e0dff0;max-height:90vh;overflow-y:auto;border-top:4px solid var(--koala)}
-.modal h3{font-size:17px;font-weight:700;margin-bottom:1.25rem;color:var(--koala)}
-.fg{margin-bottom:1rem}
-.flabel{font-size:13px;color:#555;font-weight:600;display:block;margin-bottom:5px}
-.finput{width:100%;padding:9px 11px;border:1.5px solid #dddcf0;border-radius:8px;background:#fff;color:#1a1a1a;font-size:13px}
-.finput:focus{outline:none;border-color:var(--koala)}
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.mactions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem}
-.btn-cancel{padding:8px 16px;border:1.5px solid #dddcf0;border-radius:8px;background:transparent;cursor:pointer;font-size:13px;color:#555}
-.btn-cancel:hover{background:#f5f5f5}
-.info-box{background:var(--koala-light);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--koala);display:flex;align-items:center;gap:8px;margin-bottom:1rem;font-weight:500}
-.planning-grid{display:grid;grid-template-columns:110px repeat(5,1fr);gap:0;border:1px solid #e0dff0;border-radius:12px;overflow:hidden}
+
+/* PLANNING */
+.planning-grid{display:grid;grid-template-columns:110px repeat(5,1fr);gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden}
 .pg-hd{background:var(--koala);color:#fff;padding:9px;font-size:12px;font-weight:700;text-align:center;border-bottom:1px solid rgba(255,255,255,0.2);border-right:1px solid rgba(255,255,255,0.2)}
 .pg-hd:last-child{border-right:none}
 .pg-hd:first-child{background:var(--koala-dark)}
-.pg-time{background:var(--koala-light);padding:9px 7px;font-size:11px;color:var(--koala);border-right:1px solid #e0dff0;border-bottom:1px solid #e0dff0;display:flex;align-items:center;font-weight:600}
-.pg-cell{padding:5px;border-right:1px solid #e0dff0;border-bottom:1px solid #e0dff0;min-height:60px;cursor:pointer;background:#fff}
+.pg-time{background:var(--koala-light);padding:9px 7px;font-size:11px;color:var(--koala);border-right:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;font-weight:600}
+.pg-cell{padding:5px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);min-height:60px;cursor:pointer;background:#fff}
 .pg-cell:last-child{border-right:none}
 .pg-cell:hover{background:var(--koala-light)}
 .pg-ev{border-radius:6px;padding:4px 7px;font-size:11px;margin-bottom:3px;cursor:pointer;font-weight:600}
@@ -129,29 +162,175 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:0.75rem}
 .leg-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#666;font-weight:500}
 .leg-dot{width:12px;height:12px;border-radius:3px}
-@media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr)}.frow{grid-template-columns:1fr}.section-actions{flex-direction:column}}
+
+/* INCIDENTS */
+.incident-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:0.875rem 1.1rem;display:flex;gap:12px;align-items:flex-start;border-left:4px solid var(--red);border-radius:0 12px 12px 0;margin-bottom:8px}
+.incident-card.leger{border-left-color:var(--orange)}
+.incident-card.info{border-left-color:var(--blue)}
+.inc-sev{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.inc-sev.grave{background:var(--red-light)}
+.inc-sev.leger{background:var(--orange-light)}
+.inc-sev.info{background:var(--blue-light)}
+.inc-meta{flex:1}
+.inc-title{font-size:14px;font-weight:700;color:var(--text)}
+.inc-child{font-size:12px;color:var(--koala);font-weight:600;margin-bottom:3px}
+.inc-body{font-size:13px;color:#555;line-height:1.5}
+.inc-foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+
+/* PRESENCE */
+.presence-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.presence-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:0.75rem 1rem;display:flex;align-items:center;gap:10px}
+.presence-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.presence-name{font-size:13px;font-weight:600;color:var(--text)}
+.presence-group{font-size:11px;color:var(--muted)}
+.presence-status{margin-left:auto;display:flex;gap:4px}
+.ps-dot{width:28px;height:28px;border-radius:7px;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all 0.15s}
+.ps-dot.present{background:var(--green);border-color:var(--green);color:#fff}
+.ps-dot.absent{background:var(--red);border-color:var(--red);color:#fff}
+.ps-dot.partial{background:var(--orange);border-color:var(--orange);color:#fff}
+.ps-dot:hover{transform:scale(1.1)}
+
+/* DASHBOARD */
+.dash-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:1rem}
+.dash-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem}
+.dash-card-title{font-size:13px;font-weight:700;color:var(--koala);margin-bottom:0.75rem;display:flex;align-items:center;gap:6px}
+.dash-list-item{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f0f5;font-size:12.5px}
+.dash-list-item:last-child{border-bottom:none}
+.dash-bar{height:6px;border-radius:3px;background:var(--border);margin-top:4px;overflow:hidden}
+.dash-bar-fill{height:100%;border-radius:3px;background:var(--koala);transition:width 0.5s}
+.alert-item{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;background:var(--red-light);border-radius:8px;margin-bottom:6px;font-size:12.5px;color:#c0392b}
+.alert-item.warning{background:var(--orange-light);color:var(--orange-dark)}
+.alert-item.info{background:var(--koala-light);color:var(--koala)}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center;padding:1rem}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:520px;border:1px solid var(--border);max-height:90vh;overflow-y:auto;border-top:4px solid var(--koala)}
+.modal h3{font-size:17px;font-weight:700;margin-bottom:1.25rem;color:var(--koala)}
+.fg{margin-bottom:1rem}
+.flabel{font-size:13px;color:#555;font-weight:600;display:block;margin-bottom:5px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mactions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem}
+.btn-cancel{padding:8px 16px;border:1.5px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;font-size:13px;color:#555}
+.btn-cancel:hover{background:#f5f5f5}
+.info-box{background:var(--koala-light);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--koala);display:flex;align-items:center;gap:8px;margin-bottom:1rem;font-weight:500}
+.info-box.warning{background:var(--orange-light);color:var(--orange-dark)}
+
+/* AI ASSISTANT */
+.ai-panel{background:linear-gradient(135deg,#f8f7ff,#fff8f5);border:1px solid #d8d5f5;border-radius:12px;padding:1rem 1.1rem;margin-bottom:1rem}
+.ai-panel-header{display:flex;align-items:center;gap:8px;margin-bottom:0.75rem}
+.ai-panel-title{font-size:14px;font-weight:700;background:linear-gradient(135deg,#3D3580,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ai-input-row{display:flex;gap:8px}
+.ai-input{flex:1;padding:9px 12px;border:1.5px solid #c9c6f0;border-radius:8px;font-size:13px;background:#fff}
+.ai-input:focus{outline:none;border-color:var(--koala)}
+.ai-response{background:#fff;border:1px solid #c9c6f0;border-radius:8px;padding:10px 12px;font-size:13px;color:#333;margin-top:8px;line-height:1.6;max-height:200px;overflow-y:auto;display:none}
+.ai-response.visible{display:block}
+.ai-thinking{display:flex;align-items:center;gap:8px;font-size:12px;color:#764ba2;padding:8px}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:#764ba2;animation:pulse 1.2s infinite}
+.ai-dot:nth-child(2){animation-delay:0.2s}
+.ai-dot:nth-child(3){animation-delay:0.4s}
+@keyframes pulse{0%,80%,100%{opacity:0.3}40%{opacity:1}}
+.ai-quick-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.ai-quick-btn{padding:4px 10px;border:1.5px solid #c9c6f0;border-radius:14px;background:transparent;cursor:pointer;font-size:11.5px;color:#764ba2;font-weight:500}
+.ai-quick-btn:hover{background:#f0efff;border-color:var(--koala)}
+
+/* TABS INSIDE MODULE */
+.module-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1rem}
+.module-tab{padding:8px 15px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:#777;background:transparent;border-top:none;border-left:none;border-right:none;font-weight:500}
+.module-tab.active{color:var(--koala);border-bottom-color:var(--orange);font-weight:700}
+.module-tab-content{display:none}
+.module-tab-content.active{display:block}
+
+/* RESPONSIVE */
+@media(max-width:680px){
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .frow{grid-template-columns:1fr}
+  .dash-grid{grid-template-columns:1fr}
+  .section-actions{flex-direction:column}
+  .main-nav{gap:4px}
+  .mnav-btn{padding:6px 10px;font-size:12px}
+}
 </style>
 </head>
 <body>
 <div class="app">
+
+  <!-- HEADER -->
   <div class="header">
     <div class="logo">
-      <img src="logo-koala-kids.png" alt="Koala Kids" />
+      <img src="logokoalakids_1.png" alt="Koala Kids" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+      <div style="display:none;align-items:center;gap:6px;font-weight:800;font-size:17px;color:var(--koala)">🐨 Koala Kids</div>
     </div>
     <nav class="main-nav">
       <button class="mnav-btn active" onclick="showMain('demands')" id="mnav-demands"><i class="ti ti-message-circle"></i> Demandes</button>
-      <button class="mnav-btn" onclick="showMain('referents')" id="mnav-referents"><i class="ti ti-users"></i> Référents</button>
-      <button class="mnav-btn" onclick="showMain('planning')" id="mnav-planning"><i class="ti ti-calendar-event"></i> Mon planning</button>
+      <button class="mnav-btn" onclick="showMain('incidents')" id="mnav-incidents"><i class="ti ti-alert-triangle"></i> Incidents <span class="mnav-badge" id="badge-incidents">0</span></button>
+      <button class="mnav-btn" onclick="showMain('presence')" id="mnav-presence"><i class="ti ti-users-group"></i> Présences</button>
+      <button class="mnav-btn" onclick="showMain('referents')" id="mnav-referents"><i class="ti ti-address-book"></i> Référents</button>
+      <button class="mnav-btn" onclick="showMain('planning')" id="mnav-planning"><i class="ti ti-calendar-event"></i> Planning</button>
+      <button class="mnav-btn" onclick="showMain('dashboard')" id="mnav-dashboard"><i class="ti ti-chart-bar"></i> Tableau de bord</button>
     </nav>
   </div>
 
   <div id="notif-banner" class="notif-banner"></div>
 
+  <!-- ===== DEMANDES ===== -->
   <div id="main-demands" class="tab-content active">
     <div id="creche-tabs-bar" class="creche-tabs-bar"></div>
     <div id="creche-panel"></div>
   </div>
 
+  <!-- ===== INCIDENTS ===== -->
+  <div id="main-incidents" class="tab-content">
+    <div class="section-header">
+      <div class="section-left">
+        <span class="section-title"><i class="ti ti-alert-triangle" style="color:var(--red)"></i> Registre des incidents</span>
+        <span class="section-sub">Accidents, incidents, signalements</span>
+      </div>
+      <button class="btn-primary" onclick="openIncidentModal()"><i class="ti ti-plus"></i> Déclarer un incident</button>
+    </div>
+    <div class="filters" id="incident-filters">
+      <button class="fchip active" onclick="setIncFilter('all',this)">Tous</button>
+      <button class="fchip" onclick="setIncFilter('grave',this)">🔴 Grave</button>
+      <button class="fchip" onclick="setIncFilter('leger',this)">🟠 Léger</button>
+      <button class="fchip" onclick="setIncFilter('info',this)">🔵 Info</button>
+      <button class="fchip" onclick="setIncFilter('non-traite',this)">Non traités</button>
+    </div>
+    <div id="incidents-list"></div>
+  </div>
+
+  <!-- ===== PRÉSENCES ===== -->
+  <div id="main-presence" class="tab-content">
+    <div class="section-header">
+      <div class="section-left">
+        <span class="section-title"><i class="ti ti-users-group" style="color:var(--koala)"></i> Feuille de présence</span>
+        <input type="date" class="finput" id="presence-date" style="width:160px" onchange="renderPresence()">
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-sm" onclick="openEnfantModal()"><i class="ti ti-user-plus"></i> Ajouter enfant</button>
+        <button class="btn-green" onclick="exportPresence()"><i class="ti ti-download"></i> Exporter</button>
+      </div>
+    </div>
+    <div class="module-tabs">
+      <button class="module-tab active" onclick="showPresenceTab('matin',this)"><i class="ti ti-sun"></i> Matin</button>
+      <button class="module-tab" onclick="showPresenceTab('apm',this)"><i class="ti ti-sunset"></i> Après-midi</button>
+      <button class="module-tab" onclick="showPresenceTab('semaine',this)"><i class="ti ti-calendar-week"></i> Vue semaine</button>
+    </div>
+    <div id="presence-matin" class="module-tab-content active">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:8px">
+        <div style="font-size:13px;color:var(--muted)">Cliquez sur M (matin) / A (après-midi) pour marquer la présence</div>
+        <div id="presence-summary-matin" style="font-size:13px;font-weight:600;color:var(--koala)"></div>
+      </div>
+      <div class="presence-grid" id="presence-grid-matin"></div>
+    </div>
+    <div id="presence-apm" class="module-tab-content">
+      <div class="presence-grid" id="presence-grid-apm"></div>
+    </div>
+    <div id="presence-semaine" class="module-tab-content">
+      <div id="presence-semaine-view"></div>
+    </div>
+  </div>
+
+  <!-- ===== RÉFÉRENTS ===== -->
   <div id="main-referents" class="tab-content">
     <div class="section-header">
       <span class="section-title">Annuaire des référents</span>
@@ -160,6 +339,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="ref-grid" id="ref-grid"></div>
   </div>
 
+  <!-- ===== PLANNING ===== -->
   <div id="main-planning" class="tab-content">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:8px">
       <div style="display:flex;align-items:center;gap:10px">
@@ -170,18 +350,34 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <button class="btn-primary" onclick="openEventModal()"><i class="ti ti-plus"></i> Ajouter</button>
     </div>
     <div class="legend">
-      <div class="leg-item"><div class="leg-dot" style="background:var(--koala)"></div> Présence</div>
-      <div class="leg-item"><div class="leg-dot" style="background:var(--orange)"></div> Absent</div>
-      <div class="leg-item"><div class="leg-dot" style="background:#378ADD"></div> Formation</div>
-      <div class="leg-item"><div class="leg-dot" style="background:#7B68EE"></div> Réunion</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--koala)"></div>Présence</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--orange)"></div>Absent</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#378ADD"></div>Formation</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#7B68EE"></div>Réunion</div>
     </div>
     <div class="planning-grid" id="planning-grid"></div>
   </div>
-</div>
 
+  <!-- ===== TABLEAU DE BORD ===== -->
+  <div id="main-dashboard" class="tab-content">
+    <div class="section-header">
+      <span class="section-title"><i class="ti ti-chart-bar" style="color:var(--koala)"></i> Tableau de bord direction</span>
+      <span class="section-sub" id="dash-date"></span>
+    </div>
+    <div id="dash-alerts"></div>
+    <div class="stats-row" id="dash-stats"></div>
+    <div class="dash-grid" id="dash-grid"></div>
+  </div>
+
+</div><!-- end .app -->
+
+<!-- ===== MODALS ===== -->
+
+<!-- DEMANDE -->
 <div class="overlay" id="modal-demand-wrap">
   <div class="modal">
     <h3 id="modal-d-title">Nouvelle demande</h3>
+    <div class="fg" id="d-creche-fg" style="display:none"><label class="flabel">Crèche</label><select class="finput" id="d-creche-select"><option value="">-- Choisir --</option></select></div>
     <div class="frow">
       <div class="fg"><label class="flabel">Référent</label><select class="finput" id="d-ref-select" onchange="fillRefEmail()"><option value="">-- Choisir --</option></select></div>
       <div class="fg"><label class="flabel">E-mail référent</label><input class="finput" id="d-email" placeholder="referent@email.fr" type="email"/></div>
@@ -190,13 +386,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="fg"><label class="flabel">Description</label><textarea class="finput" id="d-desc" rows="3" placeholder="Détails…" style="resize:vertical"></textarea></div>
     <div class="frow">
       <div class="fg"><label class="flabel">Priorité</label><select class="finput" id="d-prio"><option value="normal">Normale</option><option value="urgent">Urgente</option><option value="info">Information</option></select></div>
-      <div class="fg"><label class="flabel">Thème</label><select class="finput" id="d-theme"><option>Pédagogie</option><option>Matériel</option><option>Formation</option><option>Organisation</option><option>Autre</option></select></div>
+      <div class="fg"><label class="flabel">Thème</label><select class="finput" id="d-theme"><option>Pédagogie</option><option>Matériel</option><option>Formation</option><option>Organisation</option><option>Sécurité</option><option>Autre</option></select></div>
     </div>
     <div class="info-box"><i class="ti ti-mail" style="font-size:15px"></i> Un e-mail sera envoyé au référent et à l'administrateur.</div>
     <div class="mactions"><button class="btn-cancel" onclick="closeModal('modal-demand-wrap')">Annuler</button><button class="btn-primary" id="btn-save-demand" onclick="saveDemand()"><i class="ti ti-check"></i> Enregistrer</button></div>
   </div>
 </div>
 
+<!-- CONSIGNE -->
 <div class="overlay" id="modal-consigne-wrap">
   <div class="modal">
     <h3>Envoyer une consigne</h3>
@@ -209,6 +406,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- RÉFÉRENT -->
 <div class="overlay" id="modal-ref-wrap">
   <div class="modal">
     <h3 id="modal-ref-title">Ajouter un référent</h3>
@@ -222,15 +420,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- CRÈCHE -->
 <div class="overlay" id="modal-creche-wrap">
   <div class="modal">
     <h3>Ajouter une crèche</h3>
     <div class="fg"><label class="flabel">Nom</label><input class="finput" id="creche-name" placeholder="Les Petits Lutins"/></div>
     <div class="fg"><label class="flabel">Adresse (optionnel)</label><input class="finput" id="creche-addr" placeholder="Adresse"/></div>
+    <div class="fg"><label class="flabel">Capacité d'accueil</label><input class="finput" id="creche-capacity" type="number" placeholder="10" min="1" max="20"/></div>
     <div class="mactions"><button class="btn-cancel" onclick="closeModal('modal-creche-wrap')">Annuler</button><button class="btn-primary" onclick="saveCreche()"><i class="ti ti-check"></i> Ajouter</button></div>
   </div>
 </div>
 
+<!-- ÉVÉNEMENT PLANNING -->
 <div class="overlay" id="modal-event-wrap">
   <div class="modal">
     <h3>Ajouter à mon planning</h3>
@@ -244,42 +445,123 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- INCIDENT -->
+<div class="overlay" id="modal-incident-wrap">
+  <div class="modal">
+    <h3>Déclarer un incident</h3>
+    <div class="frow">
+      <div class="fg"><label class="flabel">Date</label><input class="finput" id="inc-date" type="date"/></div>
+      <div class="fg"><label class="flabel">Heure</label><input class="finput" id="inc-time" type="time"/></div>
+    </div>
+    <div class="fg"><label class="flabel">Crèche</label><select class="finput" id="inc-creche"><option value="">-- Choisir --</option></select></div>
+    <div class="fg"><label class="flabel">Enfant concerné</label><input class="finput" id="inc-child" placeholder="Prénom Nom de l'enfant"/></div>
+    <div class="fg"><label class="flabel">Type d'incident</label><select class="finput" id="inc-type">
+      <option value="chute">Chute</option>
+      <option value="morsure">Morsure</option>
+      <option value="malaise">Malaise / fièvre</option>
+      <option value="allergie">Réaction allergique</option>
+      <option value="comportement">Incident comportemental</option>
+      <option value="materiel">Incident matériel</option>
+      <option value="autre">Autre</option>
+    </select></div>
+    <div class="fg"><label class="flabel">Sévérité</label><select class="finput" id="inc-severity">
+      <option value="info">ℹ️ Information</option>
+      <option value="leger">🟠 Léger</option>
+      <option value="grave">🔴 Grave / urgence médicale</option>
+    </select></div>
+    <div class="fg"><label class="flabel">Description</label><textarea class="finput" id="inc-desc" rows="3" placeholder="Décrivez précisément ce qui s'est passé…" style="resize:vertical"></textarea></div>
+    <div class="fg"><label class="flabel">Actions menées</label><textarea class="finput" id="inc-actions" rows="2" placeholder="Soins donnés, appels passés, parents contactés…" style="resize:vertical"></textarea></div>
+    <div class="fg"><label class="flabel">Déclarant</label><input class="finput" id="inc-reporter" placeholder="Prénom Nom"/></div>
+    <div class="info-box warning"><i class="ti ti-alert-circle" style="font-size:15px"></i> En cas d'urgence médicale, appelez le 15 (SAMU) immédiatement.</div>
+    <div class="mactions"><button class="btn-cancel" onclick="closeModal('modal-incident-wrap')">Annuler</button><button class="btn-primary" onclick="saveIncident()"><i class="ti ti-check"></i> Enregistrer</button></div>
+  </div>
+</div>
+
+<!-- ENFANT -->
+<div class="overlay" id="modal-enfant-wrap">
+  <div class="modal">
+    <h3>Ajouter un enfant</h3>
+    <div class="frow">
+      <div class="fg"><label class="flabel">Prénom</label><input class="finput" id="enf-prenom" placeholder="Léa"/></div>
+      <div class="fg"><label class="flabel">Nom</label><input class="finput" id="enf-nom" placeholder="Martin"/></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label class="flabel">Date de naissance</label><input class="finput" id="enf-dob" type="date"/></div>
+      <div class="fg"><label class="flabel">Groupe</label><select class="finput" id="enf-groupe">
+        <option>Bébés (0-1 an)</option>
+        <option>Moyens (1-2 ans)</option>
+        <option>Grands (2-3 ans)</option>
+      </select></div>
+    </div>
+    <div class="fg"><label class="flabel">Crèche</label><select class="finput" id="enf-creche"><option value="">-- Choisir --</option></select></div>
+    <div class="fg"><label class="flabel">Régime alimentaire / allergies</label><input class="finput" id="enf-allergies" placeholder="Ex. : sans gluten, allergie aux arachides"/></div>
+    <div class="mactions"><button class="btn-cancel" onclick="closeModal('modal-enfant-wrap')">Annuler</button><button class="btn-primary" onclick="saveEnfant()"><i class="ti ti-check"></i> Enregistrer</button></div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL="https://juyrceadazrovlitxceb.supabase.co";
 const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1eXJjZWFkYXpyb3ZsaXR4Y2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MjcyMDIsImV4cCI6MjA5NTQwMzIwMn0.yTEoRjhJFm3qj5oY2tLIcCXOWHHbU3rxWoIn47QKmug";
-const APP_URL="https://koalakids-app.github.io/gestiondemandesRTkoalakids";
 const DAYS=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
-let activeCrecheId=null,activeFilter='all',editingRefId=null,weekOffset=0;
+let activeCrecheId=null,activeFilter='all',activeIncFilter='all',editingRefId=null,weekOffset=0,currentPresenceSlot='matin',searchTerm='';
 
-async function callFn(fn,body){try{const r=await fetch(SUPABASE_URL+'/functions/v1/'+fn,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_ANON_KEY},body:JSON.stringify(body)});return r.ok;}catch{return false;}}
-async function getReplies(id){try{const r=await fetch(SUPABASE_URL+'/rest/v1/replies?consigne_id=eq.'+id+'&order=created_at.desc',{headers:{'Authorization':'Bearer '+SUPABASE_ANON_KEY,'apikey':SUPABASE_ANON_KEY}});return await r.json();}catch{return[];}}
-async function getRefPlanning(refId){try{const ws=weekStart();const r=await fetch(SUPABASE_URL+'/rest/v1/plannings?referent_id=eq.'+refId+'&week_start=eq.'+ws.toISOString().slice(0,10),{headers:{'Authorization':'Bearer '+SUPABASE_ANON_KEY,'apikey':SUPABASE_ANON_KEY}});return await r.json();}catch{return[];}}
-
-function showBanner(msg,type='success'){const b=document.getElementById('notif-banner');b.className='notif-banner '+type;b.innerHTML='<i class="ti ti-'+(type==='success'?'circle-check':'alert-circle')+'"></i> '+msg;setTimeout(()=>{b.style.display='none';b.className='notif-banner';},5000);}
+// ─── STORAGE ───────────────────────────────────────────────────
 function load(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch{return null;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 function getCreches(){return load('creches_v2')||[];}
 function getDemands(){return load('demands_v2')||[];}
 function getReferents(){return load('referents_v1')||[];}
+function getIncidents(){return load('incidents_v1')||[];}
+function getEnfants(){return load('enfants_v1')||[];}
+function getPresence(dateStr){return load('presence_'+dateStr)||{};}
+function savePresence(dateStr,data){save('presence_'+dateStr,data);}
 function weekStart(){const n=new Date();const d=n.getDay();const diff=n.getDate()-(d===0?6:d-1);const m=new Date(n.setDate(diff+weekOffset*7));m.setHours(0,0,0,0);return m;}
 function getEvents(){return load('events_'+weekStart().toISOString().slice(0,10))||[];}
+function todayStr(){return new Date().toISOString().slice(0,10);}
+
+// ─── API ────────────────────────────────────────────────────────
+async function callFn(fn,body){try{const r=await fetch(SUPABASE_URL+'/functions/v1/'+fn,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_ANON_KEY},body:JSON.stringify(body)});return r.ok;}catch{return false;}}
+async function getReplies(id){try{const r=await fetch(SUPABASE_URL+'/rest/v1/replies?consigne_id=eq.'+id+'&order=created_at.desc',{headers:{'Authorization':'Bearer '+SUPABASE_ANON_KEY,'apikey':SUPABASE_ANON_KEY}});return await r.json();}catch{return[];}}
+async function getRefPlanning(refId){try{const ws=weekStart();const r=await fetch(SUPABASE_URL+'/rest/v1/plannings?referent_id=eq.'+refId+'&week_start=eq.'+ws.toISOString().slice(0,10),{headers:{'Authorization':'Bearer '+SUPABASE_ANON_KEY,'apikey':SUPABASE_ANON_KEY}});return await r.json();}catch{return[];}}
+
+// ─── UI UTILS ───────────────────────────────────────────────────
+function showBanner(msg,type='success'){const b=document.getElementById('notif-banner');b.className='notif-banner '+type;b.innerHTML='<i class="ti ti-'+(type==='success'?'circle-check':'alert-circle')+'"></i> '+msg;setTimeout(()=>{b.style.display='none';b.className='notif-banner';},5000);}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
 
 function showMain(tab){
-  ['demands','referents','planning'].forEach(t=>{
+  ['demands','incidents','presence','referents','planning','dashboard'].forEach(t=>{
     document.getElementById('main-'+t).classList.toggle('active',t===tab);
     document.getElementById('mnav-'+t).classList.toggle('active',t===tab);
   });
   if(tab==='planning')renderPlanning();
   if(tab==='demands')renderCrecheTabs();
   if(tab==='referents')renderReferents();
+  if(tab==='incidents')renderIncidents();
+  if(tab==='presence'){initPresenceDate();renderPresence();}
+  if(tab==='dashboard')renderDashboard();
 }
 
+// ─── BADGE UPDATE ───────────────────────────────────────────────
+function updateBadges(){
+  const inc=getIncidents().filter(i=>!i.traite).length;
+  const b=document.getElementById('badge-incidents');
+  b.textContent=inc;b.style.display=inc>0?'':'none';
+}
+
+// ─── DEMANDES ───────────────────────────────────────────────────
 function renderCrecheTabs(){
   const creches=getCreches(),demands=getDemands();
   const bar=document.getElementById('creche-tabs-bar');
+  // 'all' = toutes crèches, null = aucune crèche dispo
   if(!creches.length){activeCrecheId=null;}
-  else if(!activeCrecheId||!creches.find(c=>c.id===activeCrecheId)){activeCrecheId=creches[0].id;}
+  else if(activeCrecheId!=='all'&&(!activeCrecheId||!creches.find(c=>c.id===activeCrecheId))){activeCrecheId='all';}
   let html='';
+  // Onglet "Toutes"
+  if(creches.length){
+    const totalAll=demands.length;
+    html+='<button class="creche-tab'+(activeCrecheId==='all'?' active':'')+'" onclick="selectCreche(\'all\')"><i class="ti ti-building-community" style="font-size:13px"></i> Toutes les crèches<span class="tab-count">'+totalAll+'</span></button>';
+  }
   creches.forEach(c=>{
     const count=demands.filter(d=>d.crecheId===c.id).length;
     html+='<button class="creche-tab'+(activeCrecheId===c.id?' active':'')+'" onclick="selectCreche(\''+c.id+'\')"><i class="ti ti-building" style="font-size:13px"></i> '+c.name+'<span class="tab-count">'+count+'</span></button>';
@@ -289,37 +571,92 @@ function renderCrecheTabs(){
   renderCrechePanel();
 }
 
-function selectCreche(id){activeCrecheId=id;activeFilter='all';renderCrecheTabs();}
+function selectCreche(id){activeCrecheId=id;activeFilter='all';searchTerm='';renderCrecheTabs();}
 
 async function renderCrechePanel(){
   const panel=document.getElementById('creche-panel');
   const creches=getCreches(),demands=getDemands();
   if(!creches.length){panel.innerHTML='<div class="empty-state"><i class="ti ti-building-off"></i><p>Aucune crèche. Ajoutez votre première crèche.</p></div>';return;}
-  const creche=creches.find(c=>c.id===activeCrecheId);
-  if(!creche){panel.innerHTML='';return;}
-  const all=demands.filter(d=>d.crecheId===creche.id);
-  const search=(document.getElementById('search-d')||{value:''}).value.toLowerCase();
+
+  // Déterminer le périmètre : toutes les crèches ou une seule
+  const isAll=activeCrecheId==='all';
+  const creche=isAll?null:creches.find(c=>c.id===activeCrecheId);
+  if(!isAll&&!creche){panel.innerHTML='';return;}
+
+  const all=isAll?demands:demands.filter(d=>d.crecheId===creche.id);
   let filtered=all.filter(d=>{
     if(activeFilter==='urgent'&&d.priority!=='urgent')return false;
     if(activeFilter==='attente'&&d.status!=='attente')return false;
     if(activeFilter==='traite'&&d.status!=='traite')return false;
     if(activeFilter==='consigne'&&d.type!=='consigne')return false;
-    if(search&&!d.subject.toLowerCase().includes(search)&&!(d.referent||'').toLowerCase().includes(search))return false;
+    if(searchTerm&&!d.subject.toLowerCase().includes(searchTerm)&&!(d.referent||'').toLowerCase().includes(searchTerm)&&!(creches.find(c=>c.id===d.crecheId)?.name||'').toLowerCase().includes(searchTerm))return false;
     return true;
   });
   const total=all.length,attente=all.filter(d=>d.status==='attente').length,urgent=all.filter(d=>d.priority==='urgent').length,traite=all.filter(d=>d.status==='traite').length;
-  let html='<div class="creche-header-box"><div class="creche-header-name"><i class="ti ti-building" style="font-size:20px"></i> '+creche.name+(creche.addr?'<span>'+creche.addr+'</span>':'')+'</div><div class="section-actions"><button class="btn-orange" onclick="openConsigneModal()"><i class="ti ti-send"></i> Envoyer une consigne</button><button class="btn-danger-sm" onclick="deleteCreche(\''+creche.id+'\')"><i class="ti ti-trash" style="font-size:13px"></i> Supprimer</button></div></div>';
-  html+='<div class="stats-row"><div class="stat-card"><div class="stat-label">Total</div><div class="stat-val cv">'+total+'</div></div><div class="stat-card" style="border-top-color:var(--orange)"><div class="stat-label">En attente</div><div class="stat-val co">'+attente+'</div></div><div class="stat-card" style="border-top-color:#e03e3e"><div class="stat-label">Urgentes</div><div class="stat-val cr">'+urgent+'</div></div><div class="stat-card" style="border-top-color:#2a9d4e"><div class="stat-label">Traitées</div><div class="stat-val cg">'+traite+'</div></div></div>';
-  html+='<div class="section-header"><div class="section-left"><span class="section-title">Demandes & consignes</span><input class="search-inp" id="search-d" type="text" placeholder="Rechercher…" oninput="renderCrechePanel()"></div><button class="btn-primary" onclick="openDemandModal()"><i class="ti ti-plus"></i> Nouvelle demande</button></div>';
-  html+='<div class="filters"><button class="fchip'+(activeFilter==='all'?' active':'')+'" onclick="setFilter(\'all\')">Toutes</button><button class="fchip'+(activeFilter==='urgent'?' active':'')+'" onclick="setFilter(\'urgent\')">Urgentes</button><button class="fchip'+(activeFilter==='attente'?' active':'')+'" onclick="setFilter(\'attente\')">En attente</button><button class="fchip'+(activeFilter==='traite'?' active':'')+'" onclick="setFilter(\'traite\')">Traitées</button><button class="fchip'+(activeFilter==='consigne'?' active':'')+'" onclick="setFilter(\'consigne\')">Consignes</button></div>';
-  html+='<div class="demands-list" id="demands-list-inner">';
-  if(!filtered.length){html+='<div class="empty-state"><i class="ti ti-inbox"></i><p>Aucune demande pour cette crèche.</p></div>';}
-  else{for(const d of filtered){
-    const isC=d.type==='consigne';
-    html+='<div class="dcard '+(isC?'consigne':d.priority)+'"><div class="dmeta"><div class="dtop"><span class="dsubject">'+d.subject+'</span>'+(isC?'<span class="badge b-consigne"><i class="ti ti-send" style="font-size:10px"></i> Consigne</span>':'<span class="badge b-'+d.priority+'">'+(d.priority==='urgent'?'Urgent':d.priority==='info'?'Info':'Normal')+'</span>')+(d.theme&&!isC?'<span class="badge b-ref">'+d.theme+'</span>':'')+'</div><div class="dbody">'+(d.desc||d.message||'—')+'</div><div class="dfoot">'+(d.referent?'<span class="badge b-ref"><i class="ti ti-user" style="font-size:11px"></i> '+d.referent+'</span>':'')+'<span class="meta-txt">'+d.date+'</span>'+(isC?'':'<span class="badge b-'+(d.status||'attente')+'">'+(d.status==='traite'?'Traitée':'En attente')+'</span>')+'</div><div id="replies-'+d.id+'"></div></div><div class="dactions">'+(isC?'':'<button class="ibtn" onclick="toggleStatus(\''+d.id+'\')"><i class="ti ti-'+(d.status==='traite'?'rotate-clockwise':'check')+'"></i></button>')+'<button class="ibtn del" onclick="deleteDemand(\''+d.id+'\')"><i class="ti ti-trash"></i></button></div></div>';
-  }}
-  html+='</div>';
+
+  // En-tête : différent selon vue globale ou vue crèche
+  let html='';
+  if(isAll){
+    html+='<div class="creche-header-box"><div class="creche-header-name"><i class="ti ti-building-community" style="font-size:20px"></i> Toutes les crèches <span>'+creches.length+' établissements</span></div><div class="section-actions"><button class="btn-orange" onclick="openConsigneModal()"><i class="ti ti-send"></i> Envoyer une consigne</button></div></div>';
+  } else {
+    html+='<div class="creche-header-box"><div class="creche-header-name"><i class="ti ti-building" style="font-size:20px"></i> '+creche.name+(creche.addr?'<span>'+creche.addr+'</span>':'')+(creche.capacity?'<span>Capacité : '+creche.capacity+' enfants</span>':'')+'</div><div class="section-actions"><button class="btn-orange" onclick="openConsigneModal()"><i class="ti ti-send"></i> Envoyer une consigne</button><button class="btn-danger-sm" onclick="deleteCreche(\''+creche.id+'\')"><i class="ti ti-trash" style="font-size:13px"></i> Supprimer</button></div></div>';
+  }
+
+  html+='<div class="stats-row"><div class="stat-card"><div class="stat-label"><i class="ti ti-message-circle" style="font-size:11px"></i> Total</div><div class="stat-val cv">'+total+'</div></div><div class="stat-card" style="border-top-color:var(--orange)"><div class="stat-label"><i class="ti ti-clock" style="font-size:11px"></i> En attente</div><div class="stat-val co">'+attente+'</div></div><div class="stat-card" style="border-top-color:var(--red)"><div class="stat-label"><i class="ti ti-alert-circle" style="font-size:11px"></i> Urgentes</div><div class="stat-val cr">'+urgent+'</div></div><div class="stat-card" style="border-top-color:var(--green)"><div class="stat-label"><i class="ti ti-circle-check" style="font-size:11px"></i> Traitées</div><div class="stat-val cg">'+traite+'</div></div></div>';
+
+  // Panel IA
+  html+='<div class="ai-panel"><div class="ai-panel-header"><span style="font-size:18px">✨</span><span class="ai-panel-title">Assistant IA — Koala Kids</span></div><div class="ai-input-row"><input class="ai-input" id="ai-question" placeholder="Posez une question sur les demandes…" onkeydown="if(event.key===\'Enter\')askAI()"/><button class="btn-primary" onclick="askAI()" style="flex-shrink:0"><i class="ti ti-sparkles"></i> Demander</button></div><div class="ai-quick-btns"><button class="ai-quick-btn" onclick="quickAI(\'Résume les demandes urgentes en attente\')">📋 Résumé urgent</button><button class="ai-quick-btn" onclick="quickAI(\'Quelles actions dois-je prioriser aujourd\\\'hui ?\')">🎯 Priorités du jour</button><button class="ai-quick-btn" onclick="quickAI(\'Rédige une consigne de suivi pour les demandes en attente\')">✍️ Rédiger consigne</button><button class="ai-quick-btn" onclick="quickAI(\'Analyse les tendances des demandes\')">📊 Analyser tendances</button></div><div class="ai-response" id="ai-response-box"></div></div>';
+
+  // Barre de recherche + bouton "Nouvelle demande" — HORS zone re-render pour préserver la saisie
+  html+='<div class="section-header"><div class="section-left"><span class="section-title">Demandes & consignes</span>'
+    +'<div style="position:relative"><input class="search-inp" id="search-d" type="text" placeholder="Rechercher…" value="'+searchTerm.replace(/"/g,'&quot;')+'" oninput="searchTerm=this.value;renderDemandsOnly()"><i class="ti ti-search" style="position:absolute;right:9px;top:50%;transform:translateY(-50%);color:#aaa;font-size:13px;pointer-events:none"></i></div>'
+    +'</div><button class="btn-primary" onclick="openDemandModal()"><i class="ti ti-plus"></i> Nouvelle demande</button></div>';
+
+  html+='<div class="filters"><button class="fchip'+(activeFilter==='all'?' active':'')+'" onclick="setFilter(\'all\',this)">Toutes</button><button class="fchip'+(activeFilter==='urgent'?' active':'')+'" onclick="setFilter(\'urgent\',this)">Urgentes</button><button class="fchip'+(activeFilter==='attente'?' active':'')+'" onclick="setFilter(\'attente\',this)">En attente</button><button class="fchip'+(activeFilter==='traite'?' active':'')+'" onclick="setFilter(\'traite\',this)">Traitées</button><button class="fchip'+(activeFilter==='consigne'?' active':'')+'" onclick="setFilter(\'consigne\',this)">Consignes</button></div>';
+  html+='<div id="demands-list-inner"></div>';
   panel.innerHTML=html;
+  // Maintenant on injecte uniquement les cartes dans la zone dédiée
+  await renderDemandsOnly();
+}
+
+// Render uniquement la liste des demandes — sans recréer toute la page
+async function renderDemandsOnly(){
+  const creches=getCreches(),demands=getDemands();
+  const isAll=activeCrecheId==='all';
+  const creche=isAll?null:creches.find(c=>c.id===activeCrecheId);
+  const all=isAll?demands:demands.filter(d=>d.crecheId===creche?.id);
+  let filtered=all.filter(d=>{
+    if(activeFilter==='urgent'&&d.priority!=='urgent')return false;
+    if(activeFilter==='attente'&&d.status!=='attente')return false;
+    if(activeFilter==='traite'&&d.status!=='traite')return false;
+    if(activeFilter==='consigne'&&d.type!=='consigne')return false;
+    if(searchTerm&&!d.subject.toLowerCase().includes(searchTerm)&&!(d.referent||'').toLowerCase().includes(searchTerm)&&!(creches.find(c=>c.id===d.crecheId)?.name||'').toLowerCase().includes(searchTerm))return false;
+    return true;
+  });
+  const inner=document.getElementById('demands-list-inner');
+  if(!inner)return;
+  let html='';
+  if(!filtered.length){
+    html='<div class="empty-state"><i class="ti ti-inbox"></i><p>Aucune demande trouvée.</p></div>';
+  } else {
+    for(const d of filtered){
+      const isC=d.type==='consigne';
+      const crecheLabel=isAll?(creches.find(c=>c.id===d.crecheId)?.name||''):'';
+      html+='<div class="dcard '+(isC?'consigne':d.priority)+'"><div class="dmeta"><div class="dtop"><span class="dsubject">'+d.subject+'</span>'
+        +(isC?'<span class="badge b-consigne"><i class="ti ti-send" style="font-size:10px"></i> Consigne</span>':'<span class="badge b-'+d.priority+'">'+(d.priority==='urgent'?'🔴 Urgent':d.priority==='info'?'ℹ️ Info':'Normal')+'</span>')
+        +(d.theme&&!isC?'<span class="badge b-ref">'+d.theme+'</span>':'')
+        +(isAll&&crecheLabel?'<span class="badge" style="background:#f0f0ff;color:var(--koala)"><i class="ti ti-building" style="font-size:10px"></i> '+crecheLabel+'</span>':'')
+        +'</div><div class="dbody">'+(d.desc||d.message||'—')+'</div>'
+        +'<div class="dfoot">'+(d.referent?'<span class="badge b-ref"><i class="ti ti-user" style="font-size:11px"></i> '+d.referent+'</span>':'')
+        +'<span class="meta-txt">'+d.date+'</span>'
+        +(isC?'':'<span class="badge b-'+(d.status||'attente')+'">'+(d.status==='traite'?'✅ Traitée':'⏳ En attente')+'</span>')
+        +'</div><div id="replies-'+d.id+'"></div></div>'
+        +'<div class="dactions">'+(isC?'':'<button class="ibtn" title="Changer statut" onclick="toggleStatus(\''+d.id+'\')"><i class="ti ti-'+(d.status==='traite'?'rotate-clockwise':'check')+'"></i></button>')
+        +'<button class="ibtn del" title="Supprimer" onclick="deleteDemand(\''+d.id+'\')"><i class="ti ti-trash"></i></button></div></div>';
+    }
+  }
+  inner.innerHTML=html;
+  // Charger les réponses aux consignes
   for(const d of filtered){
     if(d.type==='consigne'){
       const replies=await getReplies(d.id);
@@ -329,31 +666,98 @@ async function renderCrechePanel(){
   }
 }
 
-function setFilter(f){activeFilter=f;renderCrechePanel();}
+function setFilter(f,el){
+  activeFilter=f;
+  document.querySelectorAll('.filters .fchip').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  renderDemandsOnly();
+}
 function fillRefEmail(){const sel=document.getElementById('d-ref-select');const ref=getReferents().find(r=>r.name===sel.value);if(ref)document.getElementById('d-email').value=ref.email;}
 
+// ─── AI ASSISTANT ────────────────────────────────────────────────
+async function askAI(){
+  const q=document.getElementById('ai-question').value.trim();
+  if(!q)return;
+  _doAI(q);
+}
+async function quickAI(q){
+  document.getElementById('ai-question').value=q;
+  _doAI(q);
+}
+async function _doAI(question){
+  const box=document.getElementById('ai-response-box');
+  if(!box)return;
+  box.className='ai-response visible';
+  box.innerHTML='<div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span style="margin-left:4px">Analyse en cours…</span></div>';
+  
+  const creches=getCreches(),demands=getDemands(),incidents=getIncidents(),enfants=getEnfants();
+  const isAll=activeCrecheId==='all';
+  const creche=isAll?null:creches.find(c=>c.id===activeCrecheId);
+  const crecheDemands=isAll?demands:demands.filter(d=>d.crecheId===activeCrecheId);
+  const crecheIncidents=isAll?incidents:incidents.filter(i=>i.crecheId===activeCrecheId);
+  const scope=isAll?'l\'ensemble du réseau Koala Kids ('+creches.length+' crèches)':`la crèche "${creche?.name||'inconnue'}"`;
+  
+  const context=`Tu es un assistant expert en gestion de micro-crèches pour Koala Kids (réseau de crèches françaises).
+Voici les données actuelles pour ${scope} :
+- Nombre de demandes : ${crecheDemands.length} (dont ${crecheDemands.filter(d=>d.status==='attente').length} en attente, ${crecheDemands.filter(d=>d.priority==='urgent').length} urgentes)
+- Incidents : ${crecheIncidents.length} (dont ${crecheIncidents.filter(i=>!i.traite).length} non traités)
+- Enfants inscrits : ${isAll?enfants.length:enfants.filter(e=>e.crecheId===activeCrecheId).length}
+- Dernières demandes : ${crecheDemands.slice(0,5).map(d=>'['+d.priority.toUpperCase()+'] '+d.subject+' ('+d.status+')').join(' | ')||'aucune'}
+- Derniers incidents : ${crecheIncidents.slice(0,3).map(i=>'['+i.severity+'] '+i.type+' — '+i.child).join(' | ')||'aucun'}
+
+Réponds de façon concise, pratique, en français, avec des recommandations concrètes adaptées au terrain d'une micro-crèche.`;
+
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:context,messages:[{role:'user',content:question}]})});
+    const data=await r.json();
+    const text=data.content?.find(b=>b.type==='text')?.text||'Désolé, impossible de répondre.';
+    box.innerHTML='<div style="line-height:1.7;white-space:pre-wrap">'+text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')+'</div>';
+  }catch(e){box.innerHTML='<div style="color:var(--red)">Erreur de connexion à l\'assistant IA.</div>';}
+}
+
+// ─── DEMANDES ACTIONS ────────────────────────────────────────────
 function populateSelects(){
-  const refs=getReferents(),creches=getCreches(),creche=creches.find(c=>c.id===activeCrecheId);
+  const refs=getReferents(),creches=getCreches();
+  const creche=activeCrecheId!=='all'?creches.find(c=>c.id===activeCrecheId):null;
   const cRefs=creche?refs.filter(r=>r.crecheId===creche.id):refs;
   const dSel=document.getElementById('d-ref-select');
-  if(dSel)dSel.innerHTML='<option value="">-- Choisir --</option>'+cRefs.map(r=>'<option value="'+r.name+'">'+r.name+'</option>').join('');
+  if(dSel)dSel.innerHTML='<option value="">-- Choisir --</option>'+cRefs.map(r=>'<option value="'+r.name+'">'+r.name+(creche?'':' ('+( creches.find(c=>c.id===r.crecheId)?.name||'?')+')')+'</option>').join('');
   const cSel=document.getElementById('c-ref-select');
   if(cSel)cSel.innerHTML='<option value="">-- Choisir --</option>'+refs.map(r=>'<option value="'+r.id+'">'+r.name+(creches.find(c=>c.id===r.crecheId)?' ('+creches.find(c=>c.id===r.crecheId).name+')':'')+'</option>').join('');
 }
 
-function openDemandModal(){populateSelects();['d-ref-select','d-email','d-subj','d-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('d-prio').value='normal';document.getElementById('d-theme').value='Pédagogie';document.getElementById('modal-d-title').textContent='Nouvelle demande';document.getElementById('modal-demand-wrap').classList.add('open');}
+function openDemandModal(){
+  populateSelects();
+  ['d-ref-select','d-email','d-subj','d-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('d-prio').value='normal';
+  document.getElementById('d-theme').value='Pédagogie';
+  document.getElementById('modal-d-title').textContent='Nouvelle demande';
+  // Afficher le sélecteur de crèche uniquement en mode "toutes"
+  const isAll=activeCrecheId==='all';
+  const fg=document.getElementById('d-creche-fg');
+  if(fg)fg.style.display=isAll?'block':'none';
+  if(isAll){
+    const creches=getCreches();
+    const sel=document.getElementById('d-creche-select');
+    if(sel)sel.innerHTML='<option value="">-- Choisir une crèche --</option>'+creches.map(c=>'<option value="'+c.id+'">'+c.name+'</option>').join('');
+  }
+  document.getElementById('modal-demand-wrap').classList.add('open');
+}
 function openConsigneModal(){populateSelects();document.getElementById('c-ref-select').value='';document.getElementById('c-subj').value='';document.getElementById('c-msg').value='';document.getElementById('c-prio').value='normal';document.getElementById('modal-consigne-wrap').classList.add('open');}
 
 async function saveDemand(){
   const refName=document.getElementById('d-ref-select').value||'',subj=document.getElementById('d-subj').value.trim();
   if(!subj){alert('Sujet requis.');return;}
+  // En mode "toutes crèches", on demande de choisir la crèche dans le modal
+  const targetCrecheId=activeCrecheId==='all'?document.getElementById('d-creche-select')?.value:activeCrecheId;
+  if(!targetCrecheId||targetCrecheId==='all'){alert('Veuillez sélectionner une crèche.');return;}
   const btn=document.getElementById('btn-save-demand');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i> Envoi…';
-  const demands=getDemands(),creches=getCreches(),creche=creches.find(c=>c.id===activeCrecheId);
+  const demands=getDemands(),creches=getCreches(),creche=creches.find(c=>c.id===targetCrecheId);
   const referentEmail=document.getElementById('d-email').value.trim();
-  const newD={id:Date.now().toString(),crecheId:activeCrecheId,referent:refName,referentEmail,subject:subj,desc:document.getElementById('d-desc').value.trim(),priority:document.getElementById('d-prio').value,theme:document.getElementById('d-theme').value,status:'attente',date:new Date().toLocaleDateString('fr-FR'),type:'demande'};
+  const newD={id:Date.now().toString(),crecheId:targetCrecheId,referent:refName,referentEmail,subject:subj,desc:document.getElementById('d-desc').value.trim(),priority:document.getElementById('d-prio').value,theme:document.getElementById('d-theme').value,status:'attente',date:new Date().toLocaleDateString('fr-FR'),type:'demande'};
   demands.unshift(newD);
   const ok=await callFn('notify-demand',{demand:{...newD,creche:creche?.name||''}});
-  if(ok)showBanner('Demande enregistrée — e-mails envoyés !');else showBanner('Demande enregistrée.','error');
+  if(ok)showBanner('Demande enregistrée — e-mails envoyés !');else showBanner('Demande enregistrée (mode local).','error');
   save('demands_v2',demands);btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i> Enregistrer';
   closeModal('modal-demand-wrap');renderCrecheTabs();
 }
@@ -362,8 +766,11 @@ async function saveConsigne(){
   const refId=document.getElementById('c-ref-select').value,subj=document.getElementById('c-subj').value.trim(),msg=document.getElementById('c-msg').value.trim();
   if(!refId||!subj||!msg){alert('Tous les champs sont requis.');return;}
   const btn=document.getElementById('btn-save-consigne');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i> Envoi…';
-  const refs=getReferents(),creches=getCreches(),ref=refs.find(r=>r.id===refId),creche=creches.find(c=>c.id===activeCrecheId);
-  const consigne={id:Date.now().toString(),crecheId:activeCrecheId,referent:ref?.name||'',referentEmail:ref?.email||'',subject:subj,message:msg,priority:document.getElementById('c-prio').value,date:new Date().toLocaleDateString('fr-FR'),type:'consigne',status:'envoyee'};
+  const refs=getReferents(),creches=getCreches(),ref=refs.find(r=>r.id===refId);
+  // Rattacher à la crèche du référent si en mode "toutes crèches"
+  const targetCrecheId=(activeCrecheId==='all')?ref?.crecheId:activeCrecheId;
+  const creche=creches.find(c=>c.id===targetCrecheId);
+  const consigne={id:Date.now().toString(),crecheId:targetCrecheId||'',referent:ref?.name||'',referentEmail:ref?.email||'',subject:subj,message:msg,priority:document.getElementById('c-prio').value,date:new Date().toLocaleDateString('fr-FR'),type:'consigne',status:'envoyee'};
   const demands=getDemands();demands.unshift(consigne);save('demands_v2',demands);
   const ok=await callFn('notify-consigne',{consigne:{...consigne,creche:creche?.name||''}});
   if(ok)showBanner('Consigne envoyée à '+ref?.name+' !');else showBanner('Consigne enregistrée (e-mail non disponible).','error');
@@ -376,15 +783,223 @@ async function toggleStatus(id){
   if(!d)return;d.status=d.status==='traite'?'attente':'traite';save('demands_v2',demands);
   const creche=creches.find(c=>c.id===d.crecheId);
   await callFn('notify-status',{demand:{...d,creche:creche?.name||''},newStatus:d.status});
-  showBanner('Demande "'+(d.status==='traite'?'traitée':'remise en attente')+'" !');
-  renderCrecheTabs();
+  showBanner('Demande '+(d.status==='traite'?'traitée ✅':'remise en attente ⏳')+' !');
+  renderDemandsOnly();
+  // Mettre à jour les compteurs dans les onglets
+  renderCrecheTabsOnly();
 }
 
-function deleteDemand(id){if(!confirm('Supprimer ?'))return;save('demands_v2',getDemands().filter(d=>d.id!==id));renderCrecheTabs();}
-function openCrecheModal(){document.getElementById('creche-name').value='';document.getElementById('creche-addr').value='';document.getElementById('modal-creche-wrap').classList.add('open');}
-function saveCreche(){const name=document.getElementById('creche-name').value.trim();if(!name){alert('Nom requis.');return;}const creches=getCreches();const newC={id:Date.now().toString(),name,addr:document.getElementById('creche-addr').value.trim()};creches.push(newC);save('creches_v2',creches);activeCrecheId=newC.id;closeModal('modal-creche-wrap');renderCrecheTabs();}
-function deleteCreche(id){if(!confirm('Supprimer cette crèche ?'))return;save('creches_v2',getCreches().filter(c=>c.id!==id));save('demands_v2',getDemands().filter(d=>d.crecheId!==id));const creches=getCreches();activeCrecheId=creches.length?creches[0].id:null;renderCrecheTabs();}
+function deleteDemand(id){if(!confirm('Supprimer cette demande ?'))return;save('demands_v2',getDemands().filter(d=>d.id!==id));renderDemandsOnly();renderCrecheTabsOnly();}
 
+// Met à jour uniquement les compteurs dans la barre d'onglets, sans re-render du panel
+function renderCrecheTabsOnly(){
+  const creches=getCreches(),demands=getDemands(),bar=document.getElementById('creche-tabs-bar');
+  if(!bar)return;
+  let html='';
+  if(creches.length){
+    const totalAll=demands.length;
+    html+='<button class="creche-tab'+(activeCrecheId==='all'?' active':'')+'" onclick="selectCreche(\'all\')"><i class="ti ti-building-community" style="font-size:13px"></i> Toutes les crèches<span class="tab-count">'+totalAll+'</span></button>';
+  }
+  creches.forEach(c=>{
+    const count=demands.filter(d=>d.crecheId===c.id).length;
+    html+='<button class="creche-tab'+(activeCrecheId===c.id?' active':'')+'" onclick="selectCreche(\''+c.id+'\')"><i class="ti ti-building" style="font-size:13px"></i> '+c.name+'<span class="tab-count">'+count+'</span></button>';
+  });
+  html+='<button class="add-creche-btn" onclick="openCrecheModal()"><i class="ti ti-plus"></i> Ajouter une crèche</button>';
+  bar.innerHTML=html;
+}
+function openCrecheModal(){document.getElementById('creche-name').value='';document.getElementById('creche-addr').value='';document.getElementById('creche-capacity').value='';document.getElementById('modal-creche-wrap').classList.add('open');}
+function saveCreche(){const name=document.getElementById('creche-name').value.trim();if(!name){alert('Nom requis.');return;}const creches=getCreches();const newC={id:Date.now().toString(),name,addr:document.getElementById('creche-addr').value.trim(),capacity:document.getElementById('creche-capacity').value||''};creches.push(newC);save('creches_v2',creches);activeCrecheId=newC.id;closeModal('modal-creche-wrap');renderCrecheTabs();}
+function deleteCreche(id){if(!confirm('Supprimer cette crèche et toutes ses demandes ?'))return;save('creches_v2',getCreches().filter(c=>c.id!==id));save('demands_v2',getDemands().filter(d=>d.crecheId!==id));activeCrecheId='all';renderCrecheTabs();}
+
+// ─── INCIDENTS ───────────────────────────────────────────────────
+function setIncFilter(f,btn){
+  activeIncFilter=f;
+  document.querySelectorAll('#incident-filters .fchip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderIncidents();
+}
+
+function renderIncidents(){
+  const incidents=getIncidents(),creches=getCreches();
+  const list=document.getElementById('incidents-list');
+  let filtered=incidents.filter(i=>{
+    if(activeIncFilter==='grave'&&i.severity!=='grave')return false;
+    if(activeIncFilter==='leger'&&i.severity!=='leger')return false;
+    if(activeIncFilter==='info'&&i.severity!=='info')return false;
+    if(activeIncFilter==='non-traite'&&i.traite)return false;
+    return true;
+  });
+  filtered.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  if(!filtered.length){list.innerHTML='<div class="empty-state"><i class="ti ti-shield-check"></i><p>Aucun incident enregistré.</p></div>';return;}
+  const sevIcon={grave:'🔴',leger:'🟠',info:'ℹ️'};
+  const sevLabel={grave:'Grave',leger:'Léger',info:'Information'};
+  list.innerHTML=filtered.map(i=>{
+    const creche=creches.find(c=>c.id===i.crecheId);
+    return `<div class="incident-card ${i.severity}" id="inc-${i.id}">
+      <div class="inc-sev ${i.severity}" style="font-size:18px">${sevIcon[i.severity]||'⚪'}</div>
+      <div class="inc-meta">
+        <div class="inc-child"><i class="ti ti-user" style="font-size:11px"></i> ${i.child||'Enfant non précisé'} ${creche?'— '+creche.name:''}</div>
+        <div class="inc-title">${i.type.charAt(0).toUpperCase()+i.type.slice(1)} · ${i.date||''} ${i.time?'à '+i.time:''}</div>
+        <div class="inc-body" style="margin-top:4px">${i.desc||'—'}</div>
+        ${i.actions?'<div style="margin-top:6px;font-size:12px;color:var(--green);background:var(--green-light);border-radius:6px;padding:4px 8px"><i class="ti ti-stethoscope" style="font-size:11px"></i> <strong>Actions :</strong> '+i.actions+'</div>':''}
+        <div class="inc-foot">
+          <span class="badge" style="background:${i.severity==='grave'?'var(--red-light)':i.severity==='leger'?'var(--orange-light)':'var(--blue-light)'};color:${i.severity==='grave'?'#c0392b':i.severity==='leger'?'var(--orange-dark)':'var(--blue)'}">${sevLabel[i.severity]||i.severity}</span>
+          ${i.reporter?'<span class="meta-txt"><i class="ti ti-user-check" style="font-size:11px"></i> '+i.reporter+'</span>':''}
+          ${i.traite?'<span class="badge b-traite">✅ Traité</span>':'<span class="badge b-attente">⏳ En cours</span>'}
+        </div>
+      </div>
+      <div class="dactions">
+        <button class="ibtn" title="${i.traite?'Rouvrir':'Marquer traité'}" onclick="toggleIncident('${i.id}')"><i class="ti ti-${i.traite?'rotate-clockwise':'check'}"></i></button>
+        <button class="ibtn del" title="Supprimer" onclick="deleteIncident('${i.id}')"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openIncidentModal(){
+  const creches=getCreches();
+  document.getElementById('inc-creche').innerHTML='<option value="">-- Choisir --</option>'+creches.map(c=>'<option value="'+c.id+'">'+c.name+'</option>').join('');
+  document.getElementById('inc-date').value=todayStr();
+  document.getElementById('inc-time').value=new Date().toTimeString().slice(0,5);
+  ['inc-child','inc-desc','inc-actions','inc-reporter'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('inc-type').value='chute';document.getElementById('inc-severity').value='leger';
+  document.getElementById('modal-incident-wrap').classList.add('open');
+}
+
+function saveIncident(){
+  const child=document.getElementById('inc-child').value.trim(),desc=document.getElementById('inc-desc').value.trim();
+  if(!desc){alert('La description est requise.');return;}
+  const inc={id:Date.now().toString(),crecheId:document.getElementById('inc-creche').value,child,date:document.getElementById('inc-date').value,time:document.getElementById('inc-time').value,type:document.getElementById('inc-type').value,severity:document.getElementById('inc-severity').value,desc,actions:document.getElementById('inc-actions').value.trim(),reporter:document.getElementById('inc-reporter').value.trim(),traite:false,createdAt:new Date().toISOString()};
+  const incs=getIncidents();incs.unshift(inc);save('incidents_v1',incs);
+  updateBadges();showBanner('Incident enregistré.');closeModal('modal-incident-wrap');renderIncidents();
+}
+
+function toggleIncident(id){const incs=getIncidents(),i=incs.find(x=>x.id===id);if(!i)return;i.traite=!i.traite;save('incidents_v1',incs);updateBadges();renderIncidents();}
+function deleteIncident(id){if(!confirm('Supprimer cet incident ?'))return;save('incidents_v1',getIncidents().filter(i=>i.id!==id));updateBadges();renderIncidents();}
+
+// ─── PRÉSENCES ───────────────────────────────────────────────────
+function initPresenceDate(){
+  const input=document.getElementById('presence-date');
+  if(!input.value)input.value=todayStr();
+}
+
+function showPresenceTab(tab,btn){
+  document.querySelectorAll('.module-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.module-tab-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('presence-'+tab).classList.add('active');
+  currentPresenceSlot=tab;
+  renderPresence();
+}
+
+function renderPresence(){
+  const dateStr=document.getElementById('presence-date')?.value||todayStr();
+  const enfants=getEnfants(),creches=getCreches();
+  const presData=getPresence(dateStr);
+  
+  if(currentPresenceSlot==='semaine'){renderPresenceSemaine();return;}
+  
+  const slot=currentPresenceSlot==='matin'?'M':'A';
+  const gridId='presence-grid-'+(currentPresenceSlot==='matin'?'matin':'apm');
+  const grid=document.getElementById(gridId);
+  if(!grid)return;
+  
+  if(!enfants.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1"><i class="ti ti-users"></i><p>Aucun enfant enregistré. Ajoutez des enfants pour saisir les présences.</p></div>';return;}
+  
+  const avatarColors=['#3D3580','#F47920','#2a9d4e','#378ADD','#7B68EE','#e03e3e','#C95F0A'];
+  grid.innerHTML=enfants.map((e,idx)=>{
+    const key=e.id+'_'+slot;
+    const status=presData[key]||'';
+    const creche=creches.find(c=>c.id===e.crecheId);
+    const initials=(e.prenom||'?')[0].toUpperCase()+(e.nom||'?')[0].toUpperCase();
+    const color=avatarColors[idx%avatarColors.length];
+    return `<div class="presence-card">
+      <div class="presence-avatar" style="background:${color}">${initials}</div>
+      <div style="flex:1;min-width:0">
+        <div class="presence-name">${e.prenom} ${e.nom}</div>
+        <div class="presence-group">${e.groupe||'—'} ${creche?'· '+creche.name:''}</div>
+        ${e.allergies?'<div style="font-size:10px;color:var(--orange);margin-top:2px">⚠️ '+e.allergies+'</div>':''}
+      </div>
+      <div class="presence-status">
+        <div class="ps-dot ${status==='present'?'present':''}" onclick="setPresence('${e.id}','${slot}','${dateStr}','present')" title="Présent">✓</div>
+        <div class="ps-dot ${status==='absent'?'absent':''}" onclick="setPresence('${e.id}','${slot}','${dateStr}','absent')" title="Absent">✗</div>
+        <div class="ps-dot ${status==='partial'?'partial':''}" onclick="setPresence('${e.id}','${slot}','${dateStr}','partial')" title="Partiel">½</div>
+      </div>
+    </div>`;
+  }).join('');
+  
+  // Summary
+  const total=enfants.length,presents=Object.entries(presData).filter(([k,v])=>k.endsWith('_'+slot)&&v==='present').length;
+  const summEl=document.getElementById('presence-summary-'+currentPresenceSlot);
+  if(summEl)summEl.textContent=presents+' / '+total+' présents';
+}
+
+function setPresence(enfantId,slot,dateStr,status){
+  const data=getPresence(dateStr);
+  const key=enfantId+'_'+slot;
+  if(data[key]===status)delete data[key];
+  else data[key]=status;
+  savePresence(dateStr,data);
+  renderPresence();
+}
+
+function renderPresenceSemaine(){
+  const enfants=getEnfants();
+  const ws=weekStart();
+  const view=document.getElementById('presence-semaine-view');
+  if(!enfants.length){view.innerHTML='<div class="empty-state"><i class="ti ti-users"></i><p>Aucun enfant enregistré.</p></div>';return;}
+  const fmt=d=>d.toLocaleDateString('fr-FR',{weekday:'short',day:'2-digit',month:'2-digit'});
+  const days5=Array.from({length:5},(_,i)=>{const d=new Date(ws);d.setDate(ws.getDate()+i);return d;});
+  const dotColor={present:'#2a9d4e',absent:'#e03e3e',partial:'#F47920','':'#e0dff0'};
+  let html='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:var(--koala);color:#fff"><th style="padding:8px 10px;text-align:left;border-radius:8px 0 0 0">Enfant</th>';
+  days5.forEach(d=>{html+='<th style="padding:8px 6px;text-align:center">'+fmt(d)+'<br><span style="font-size:9px;opacity:0.7">M / A</span></th>';});
+  html+='</tr></thead><tbody>';
+  enfants.forEach((e,idx)=>{
+    html+='<tr style="background:'+(idx%2===0?'#fff':var_koala_light())+'"><td style="padding:8px 10px;font-weight:600;color:var(--koala)">'+(e.prenom||'')+' '+(e.nom||'')+'</td>';
+    days5.forEach(d=>{
+      const ds=d.toISOString().slice(0,10),data=getPresence(ds);
+      const m=data[e.id+'_M']||'',a=data[e.id+'_A']||'';
+      html+='<td style="text-align:center;padding:6px"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:'+dotColor[m]+';margin-right:2px" title="Matin : '+(m||'non saisi')+'"></span><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:'+dotColor[a]+'" title="A-M : '+(a||'non saisi')+'"></span></td>';
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table></div>';
+  view.innerHTML=html;
+}
+function var_koala_light(){return '#EEEDF8';}
+
+function exportPresence(){
+  const dateStr=document.getElementById('presence-date')?.value||todayStr();
+  const enfants=getEnfants(),creches=getCreches();
+  const presData=getPresence(dateStr);
+  let csv='Enfant,Crèche,Groupe,Allergies,Matin,Après-midi\n';
+  enfants.forEach(e=>{
+    const creche=creches.find(c=>c.id===e.crecheId);
+    const m=presData[e.id+'_M']||'non saisi',a=presData[e.id+'_A']||'non saisi';
+    csv+='"'+(e.prenom+' '+e.nom)+'","'+(creche?.name||'')+'","'+(e.groupe||'')+'","'+(e.allergies||'')+'","'+m+'","'+a+'"\n';
+  });
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='presences_'+dateStr+'.csv';a.click();
+  URL.revokeObjectURL(url);
+  showBanner('Export CSV téléchargé !');
+}
+
+function openEnfantModal(){
+  const creches=getCreches();
+  document.getElementById('enf-creche').innerHTML='<option value="">-- Choisir --</option>'+creches.map(c=>'<option value="'+c.id+'">'+c.name+'</option>').join('');
+  ['enf-prenom','enf-nom','enf-dob','enf-allergies'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('modal-enfant-wrap').classList.add('open');
+}
+function saveEnfant(){
+  const prenom=document.getElementById('enf-prenom').value.trim(),nom=document.getElementById('enf-nom').value.trim();
+  if(!prenom){alert('Prénom requis.');return;}
+  const enfants=getEnfants();
+  enfants.push({id:Date.now().toString(),prenom,nom,dob:document.getElementById('enf-dob').value,groupe:document.getElementById('enf-groupe').value,crecheId:document.getElementById('enf-creche').value,allergies:document.getElementById('enf-allergies').value.trim()});
+  save('enfants_v1',enfants);closeModal('modal-enfant-wrap');showBanner(prenom+' ajouté(e) !');renderPresence();
+}
+
+// ─── RÉFÉRENTS ───────────────────────────────────────────────────
 async function renderReferents(){
   const refs=getReferents(),creches=getCreches();
   const grid=document.getElementById('ref-grid');
@@ -395,9 +1010,9 @@ async function renderReferents(){
     const initials=r.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
     const slots=await getRefPlanning(r.id);
     let mg='<div class="planning-mini-grid">';
-    for(let d=0;d<5;d++){mg+='<div><div class="pm-day-label">'+DAYS[d].slice(0,2)+'</div>';for(let s=0;s<2;s++){const ev=slots.find(e=>e.day===d&&e.slot===s);mg+='<div class="pm-slot'+(ev?' '+ev.type:'')+'" title="'+(ev?ev.type:'')+'"></div>';}mg+='</div>';}
+    for(let d=0;d<5;d++){mg+='<div><div class="pm-day-label">'+DAYS[d].slice(0,2)+'</div>';for(let s=0;s<2;s++){const ev=slots.find(e=>e.day===d&&e.slot===s);mg+='<div class="pm-slot'+(ev?' '+ev.type:'')+'" title="'+(ev?ev.type:'')+'" style="cursor:default"></div>';}mg+='</div>';}
     mg+='</div>';
-    html+='<div class="ref-card"><div class="ref-card-top"><div class="ref-avatar">'+initials+'</div><div style="flex:1;min-width:0"><div class="ref-name">'+r.name+'</div><div class="ref-detail">'+( r.poste||'Référent pédagogique')+'</div><div class="ref-detail"><i class="ti ti-building" style="font-size:11px"></i> '+(creche?.name||'—')+'</div><div class="ref-detail"><i class="ti ti-mail" style="font-size:11px"></i> '+(r.email||'—')+'</div></div></div><div class="planning-mini"><div class="planning-mini-title"><i class="ti ti-calendar" style="font-size:11px"></i> Planning cette semaine</div>'+(slots.length?mg:'<div style="font-size:11px;color:#aaa">Aucun créneau renseigné</div>')+'</div><div class="ref-actions"><button class="btn-purple" onclick="sendLink(\''+r.id+'\')"><i class="ti ti-link" style="font-size:12px"></i> Envoyer le lien</button><button class="ibtn" onclick="editRef(\''+r.id+'\')"><i class="ti ti-edit"></i></button><button class="ibtn del" onclick="deleteRef(\''+r.id+'\')"><i class="ti ti-trash"></i></button></div></div>';
+    html+='<div class="ref-card"><div class="ref-card-top"><div class="ref-avatar">'+initials+'</div><div style="flex:1;min-width:0"><div class="ref-name">'+r.name+'</div><div class="ref-detail"><i class="ti ti-briefcase" style="font-size:11px"></i> '+(r.poste||'Référent pédagogique')+'</div><div class="ref-detail"><i class="ti ti-building" style="font-size:11px"></i> '+(creche?.name||'—')+'</div><div class="ref-detail"><i class="ti ti-mail" style="font-size:11px"></i> '+(r.email||'—')+'</div></div></div><div class="planning-mini"><div class="planning-mini-title"><i class="ti ti-calendar" style="font-size:11px"></i> Planning cette semaine</div>'+(slots.length?mg:'<div style="font-size:11px;color:#aaa">Aucun créneau renseigné</div>')+'</div><div class="ref-actions"><button class="btn-sm btn-purple" style="background:var(--koala);color:#fff;border:none" onclick="sendLink(\''+r.id+'\')"><i class="ti ti-link" style="font-size:12px"></i> Envoyer le lien</button><button class="ibtn" onclick="editRef(\''+r.id+'\')"><i class="ti ti-edit"></i></button><button class="ibtn del" onclick="deleteRef(\''+r.id+'\')"><i class="ti ti-trash"></i></button></div></div>';
   }
   grid.innerHTML=html;
 }
@@ -415,9 +1030,7 @@ function editRef(id){const refs=getReferents(),r=refs.find(x=>x.id===id);if(!r)r
 function saveRef(){const name=document.getElementById('r-name').value.trim();if(!name){alert('Nom requis.');return;}const refs=getReferents();if(editingRefId){const r=refs.find(x=>x.id===editingRefId);if(r){r.name=name;r.email=document.getElementById('r-email').value.trim();r.poste=document.getElementById('r-poste').value.trim();r.crecheId=document.getElementById('r-creche').value;}}else refs.push({id:Date.now().toString(),name,email:document.getElementById('r-email').value.trim(),poste:document.getElementById('r-poste').value.trim(),crecheId:document.getElementById('r-creche').value});save('referents_v1',refs);closeModal('modal-ref-wrap');renderReferents();}
 function deleteRef(id){if(!confirm('Supprimer ce référent ?'))return;save('referents_v1',getReferents().filter(r=>r.id!==id));renderReferents();}
 
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
-
+// ─── PLANNING ───────────────────────────────────────────────────
 function changeWeek(d){weekOffset+=d;renderPlanning();}
 function renderPlanning(){
   const ws=weekStart();const fmt=d=>d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'});
@@ -443,6 +1056,68 @@ function openEventAt(d,s){document.getElementById('e-day').value=d;document.getE
 function saveEvent(){const lieu=document.getElementById('e-lieu').value.trim();if(!lieu){alert('Indiquez un lieu.');return;}const key='events_'+weekStart().toISOString().slice(0,10);const events=load(key)||[];events.push({id:Date.now().toString(),day:parseInt(document.getElementById('e-day').value),slot:parseInt(document.getElementById('e-slot').value),lieu,type:document.getElementById('e-type').value});save(key,events);closeModal('modal-event-wrap');renderPlanning();}
 function delEvent(id){const key='events_'+weekStart().toISOString().slice(0,10);save(key,(load(key)||[]).filter(e=>e.id!==id));renderPlanning();}
 
+// ─── DASHBOARD ───────────────────────────────────────────────────
+function renderDashboard(){
+  const demands=getDemands(),incidents=getIncidents(),enfants=getEnfants(),creches=getCreches(),refs=getReferents();
+  document.getElementById('dash-date').textContent='Mis à jour le '+new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  
+  const totalD=demands.length,urgentD=demands.filter(d=>d.priority==='urgent'&&d.status==='attente').length;
+  const incNT=incidents.filter(i=>!i.traite).length,incGrave=incidents.filter(i=>i.severity==='grave').length;
+  const presD=Object.keys(getPresence(todayStr())).filter(k=>k.endsWith('_M'));
+  
+  // Alerts
+  let alerts='';
+  if(urgentD>0)alerts+='<div class="alert-item"><i class="ti ti-alert-triangle" style="font-size:16px;flex-shrink:0"></i> <strong>'+urgentD+' demande(s) urgente(s)</strong> en attente de traitement</div>';
+  if(incGrave>0)alerts+='<div class="alert-item"><i class="ti ti-stethoscope" style="font-size:16px;flex-shrink:0"></i> <strong>'+incGrave+' incident(s) grave(s)</strong> enregistré(s)</div>';
+  if(incNT>0)alerts+='<div class="alert-item warning"><i class="ti ti-clipboard-list" style="font-size:16px;flex-shrink:0"></i> <strong>'+incNT+' incident(s)</strong> non traité(s) dans le registre</div>';
+  if(!creches.length)alerts+='<div class="alert-item info"><i class="ti ti-building" style="font-size:16px;flex-shrink:0"></i> Aucune crèche configurée. Commencez par ajouter une crèche.</div>';
+  document.getElementById('dash-alerts').innerHTML=alerts;
+  
+  // Stats
+  document.getElementById('dash-stats').innerHTML=`
+    <div class="stat-card"><div class="stat-label"><i class="ti ti-building" style="font-size:11px"></i> Crèches</div><div class="stat-val cv">${creches.length}</div><div class="stat-sub">${enfants.length} enfants inscrits</div></div>
+    <div class="stat-card" style="border-top-color:var(--orange)"><div class="stat-label"><i class="ti ti-message-circle" style="font-size:11px"></i> Demandes totales</div><div class="stat-val co">${totalD}</div><div class="stat-sub">${demands.filter(d=>d.status==='attente').length} en attente</div></div>
+    <div class="stat-card" style="border-top-color:var(--red)"><div class="stat-label"><i class="ti ti-alert-triangle" style="font-size:11px"></i> Incidents</div><div class="stat-val cr">${incidents.length}</div><div class="stat-sub">${incNT} non traités</div></div>
+    <div class="stat-card" style="border-top-color:var(--green)"><div class="stat-label"><i class="ti ti-users" style="font-size:11px"></i> Référents</div><div class="stat-val cg">${refs.length}</div><div class="stat-sub">actifs dans le réseau</div></div>`;
+  
+  // Dash grid
+  // Demands by creche
+  let byCrecheRows=creches.map(c=>{
+    const n=demands.filter(d=>d.crecheId===c.id).length;
+    const urg=demands.filter(d=>d.crecheId===c.id&&d.priority==='urgent'&&d.status==='attente').length;
+    const pct=totalD>0?Math.round(n/totalD*100):0;
+    return `<div class="dash-list-item"><div><strong>${c.name}</strong>${urg>0?'<span class="badge b-urgent" style="margin-left:6px">'+urg+' urgent</span>':''}</div><div style="font-size:12px;font-weight:700;color:var(--koala)">${n}</div></div><div class="dash-bar"><div class="dash-bar-fill" style="width:${pct}%"></div></div>`;
+  }).join('')||'<div style="font-size:12px;color:var(--muted);text-align:center;padding:1rem">Aucune crèche</div>';
+  
+  // Incident types breakdown
+  const incTypes=['chute','morsure','malaise','allergie','comportement','materiel','autre'];
+  const incLabels={chute:'Chute',morsure:'Morsure',malaise:'Malaise',allergie:'Allergie',comportement:'Comportement',materiel:'Matériel',autre:'Autre'};
+  const incByType=incTypes.map(t=>({t,n:incidents.filter(i=>i.type===t).length})).filter(x=>x.n>0);
+  let incTypeRows=incByType.length?incByType.map(x=>`<div class="dash-list-item"><span>${incLabels[x.t]||x.t}</span><span style="font-weight:700">${x.n}</span></div>`).join(''):'<div style="font-size:12px;color:var(--muted);text-align:center;padding:1rem">Aucun incident</div>';
+  
+  // Recent activity
+  const recent=[...demands.slice(0,5),...incidents.slice(0,3)].sort((a,b)=>new Date(b.createdAt||b.date)-new Date(a.createdAt||a.date)).slice(0,6);
+  let recentRows=recent.length?recent.map(item=>{
+    const isInc=item.severity!=null;
+    return `<div class="dash-list-item"><div style="flex:1"><i class="ti ti-${isInc?'alert-triangle':'message-circle'}" style="color:${isInc?'var(--red)':'var(--koala)'}"></i> <strong>${item.subject||item.type}</strong><br><span style="font-size:11px;color:var(--muted)">${item.date||''} ${isInc&&item.child?'· '+item.child:''}</span></div><span class="badge ${isInc?'b-urgent':'b-'+(item.priority||'normal')}">${isInc?'Incident':item.priority==='urgent'?'Urgent':'Normal'}</span></div>`;
+  }).join(''):'<div style="font-size:12px;color:var(--muted);text-align:center;padding:1rem">Aucune activité récente</div>';
+  
+  // Theme breakdown
+  const themes={};demands.forEach(d=>{if(d.theme)themes[d.theme]=(themes[d.theme]||0)+1;});
+  let themeRows=Object.keys(themes).length?Object.entries(themes).sort((a,b)=>b[1]-a[1]).map(([k,v])=>{
+    const pct=totalD>0?Math.round(v/totalD*100):0;
+    return `<div class="dash-list-item"><span>${k}</span><span style="font-weight:700;color:var(--koala)">${v} <span style="font-size:10px;color:var(--muted)">(${pct}%)</span></span></div><div class="dash-bar"><div class="dash-bar-fill" style="width:${pct}%;background:var(--orange)"></div></div>`;
+  }).join(''):'<div style="font-size:12px;color:var(--muted);text-align:center;padding:1rem">Aucune donnée</div>';
+  
+  document.getElementById('dash-grid').innerHTML=`
+    <div class="dash-card"><div class="dash-card-title"><i class="ti ti-building"></i> Demandes par crèche</div>${byCrecheRows}</div>
+    <div class="dash-card"><div class="dash-card-title"><i class="ti ti-chart-pie"></i> Thèmes des demandes</div>${themeRows}</div>
+    <div class="dash-card"><div class="dash-card-title"><i class="ti ti-alert-triangle"></i> Types d'incidents</div>${incTypeRows}</div>
+    <div class="dash-card"><div class="dash-card-title"><i class="ti ti-activity"></i> Activité récente</div>${recentRows}</div>`;
+}
+
+// ─── INIT ────────────────────────────────────────────────────────
+updateBadges();
 renderCrecheTabs();
 </script>
 </body>
