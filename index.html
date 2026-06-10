@@ -406,11 +406,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <!-- CRÈCHE -->
 <div class="overlay" id="modal-creche-wrap">
   <div class="modal">
-    <h3>Ajouter une crèche</h3>
+    <h3 id="modal-creche-title">Ajouter une crèche</h3>
     <div class="fg"><label class="flabel">Nom</label><input class="finput" id="creche-name" placeholder="Les Petits Lutins"/></div>
     <div class="fg"><label class="flabel">Adresse (optionnel)</label><input class="finput" id="creche-addr" placeholder="Adresse"/></div>
     <div class="fg"><label class="flabel">Capacité d'accueil</label><input class="finput" id="creche-capacity" type="number" placeholder="10" min="1" max="20"/></div>
-    <div class="mactions"><button class="btn-cancel" onclick="closeModal('modal-creche-wrap')">Annuler</button><button class="btn-primary" onclick="saveCreche()"><i class="ti ti-check"></i> Ajouter</button></div>
+    <div class="mactions"><button class="btn-cancel" onclick="closeModal('modal-creche-wrap')">Annuler</button><button class="btn-primary" id="btn-save-creche" onclick="saveCreche()"><i class="ti ti-check"></i> Ajouter</button></div>
   </div>
 </div>
 
@@ -633,7 +633,7 @@ async function renderCrechePanel(){
   if(isAll){
     html+='<div class="creche-header-box"><div class="creche-header-name"><i class="ti ti-building-community" style="font-size:20px"></i> Toutes les crèches <span>'+creches.length+' établissements</span></div><div class="section-actions"><button class="btn-orange" onclick="openConsigneModal()"><i class="ti ti-send"></i> Envoyer une consigne</button></div></div>';
   } else {
-    html+='<div class="creche-header-box"><div class="creche-header-name"><i class="ti ti-building" style="font-size:20px"></i> '+creche.name+(creche.addr?'<span>'+creche.addr+'</span>':'')+(creche.capacity?'<span>Capacité : '+creche.capacity+' enfants</span>':'')+'</div><div class="section-actions"><button class="btn-orange" onclick="openConsigneModal()"><i class="ti ti-send"></i> Envoyer une consigne</button><button class="btn-danger-sm" onclick="deleteCreche(\''+creche.id+'\')"><i class="ti ti-trash" style="font-size:13px"></i> Supprimer</button></div></div>';
+    html+='<div class="creche-header-box"><div class="creche-header-name"><i class="ti ti-building" style="font-size:20px"></i> '+creche.name+(creche.addr?'<span>'+creche.addr+'</span>':'')+(creche.capacity?'<span>Capacité : '+creche.capacity+' enfants</span>':'')+'</div><div class="section-actions"><button class="btn-orange" onclick="openConsigneModal()"><i class="ti ti-send"></i> Envoyer une consigne</button><button class="ibtn" style="background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.4);color:#fff" title="Modifier la crèche" onclick="editCreche(\''+creche.id+'\')"><i class="ti ti-edit"></i></button><button class="btn-danger-sm" onclick="deleteCreche(\''+creche.id+'\')"><i class="ti ti-trash" style="font-size:13px"></i> Supprimer</button></div></div>';
   }
 
   html+='<div class="stats-row"><div class="stat-card"><div class="stat-label"><i class="ti ti-message-circle" style="font-size:11px"></i> Total</div><div class="stat-val cv">'+total+'</div></div><div class="stat-card" style="border-top-color:var(--orange)"><div class="stat-label"><i class="ti ti-clock" style="font-size:11px"></i> En attente</div><div class="stat-val co">'+attente+'</div></div><div class="stat-card" style="border-top-color:var(--red)"><div class="stat-label"><i class="ti ti-alert-circle" style="font-size:11px"></i> Urgentes</div><div class="stat-val cr">'+urgent+'</div></div><div class="stat-card" style="border-top-color:var(--green)"><div class="stat-label"><i class="ti ti-circle-check" style="font-size:11px"></i> Traitées</div><div class="stat-val cg">'+traite+'</div></div></div>';
@@ -800,8 +800,45 @@ function renderCrecheTabsOnly(){
   html+='<button class="add-creche-btn" onclick="openCrecheModal()"><i class="ti ti-plus"></i> Ajouter une crèche</button>';
   bar.innerHTML=html;
 }
-function openCrecheModal(){document.getElementById('creche-name').value='';document.getElementById('creche-addr').value='';document.getElementById('creche-capacity').value='';document.getElementById('modal-creche-wrap').classList.add('open');}
-function saveCreche(){const name=document.getElementById('creche-name').value.trim();if(!name){alert('Nom requis.');return;}const creches=getCreches();const newC={id:Date.now().toString(),name,addr:document.getElementById('creche-addr').value.trim(),capacity:document.getElementById('creche-capacity').value||''};creches.push(newC);save('creches_v2',creches);activeCrecheId=newC.id;closeModal('modal-creche-wrap');renderCrecheTabs();}
+let editingCrecheId=null;
+function openCrecheModal(){
+  editingCrecheId=null;
+  document.getElementById('creche-name').value='';
+  document.getElementById('creche-addr').value='';
+  document.getElementById('creche-capacity').value='';
+  document.getElementById('modal-creche-title').textContent='Ajouter une crèche';
+  document.getElementById('btn-save-creche').innerHTML='<i class="ti ti-check"></i> Ajouter';
+  document.getElementById('modal-creche-wrap').classList.add('open');
+}
+function editCreche(id){
+  const c=getCreches().find(x=>x.id===id);
+  if(!c)return;
+  editingCrecheId=id;
+  document.getElementById('creche-name').value=c.name;
+  document.getElementById('creche-addr').value=c.addr||'';
+  document.getElementById('creche-capacity').value=c.capacity||'';
+  document.getElementById('modal-creche-title').textContent='Modifier la crèche';
+  document.getElementById('btn-save-creche').innerHTML='<i class="ti ti-check"></i> Enregistrer';
+  document.getElementById('modal-creche-wrap').classList.add('open');
+}
+function saveCreche(){
+  const name=document.getElementById('creche-name').value.trim();
+  if(!name){alert('Nom requis.');return;}
+  const creches=getCreches();
+  if(editingCrecheId){
+    const c=creches.find(x=>x.id===editingCrecheId);
+    if(c){c.name=name;c.addr=document.getElementById('creche-addr').value.trim();c.capacity=document.getElementById('creche-capacity').value||'';}
+    save('creches_v2',creches);
+    showBanner('Crèche "'+name+'" modifiée !');
+    closeModal('modal-creche-wrap');
+    renderCrecheTabs();
+  } else {
+    const newC={id:Date.now().toString(),name,addr:document.getElementById('creche-addr').value.trim(),capacity:document.getElementById('creche-capacity').value||''};
+    creches.push(newC);save('creches_v2',creches);
+    activeCrecheId=newC.id;
+    closeModal('modal-creche-wrap');renderCrecheTabs();
+  }
+}
 function deleteCreche(id){if(!confirm('Supprimer cette crèche et toutes ses demandes ?'))return;save('creches_v2',getCreches().filter(c=>c.id!==id));save('demands_v2',getDemands().filter(d=>d.crecheId!==id));activeCrecheId='all';renderCrecheTabs();}
 
 // ─── INCIDENTS ───────────────────────────────────────────────────
