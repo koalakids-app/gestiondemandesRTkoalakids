@@ -550,7 +550,7 @@ function renderCrecheTabs(){
   });
   html+='<button class="add-creche-btn" onclick="openCrecheModal()"><i class="ti ti-plus"></i> Ajouter une crèche</button>';
   bar.innerHTML=html;
-  renderCrechePanel();
+  renderCrechePanel().catch(e=>console.error('renderCrechePanel error:',e));
 }
 
 function selectCreche(id){activeCrecheId=id;activeFilter='all';searchTerm='';renderCrecheTabs();}
@@ -1058,8 +1058,7 @@ function renderDashboard(){
 }
 
 // ─── INIT ────────────────────────────────────────────────────────
-updateBadges();
-renderCrecheTabs();
+try{updateBadges();renderCrecheTabs();}catch(e){console.error('Init error:',e);}
 </script>
 </body>
 </html>
